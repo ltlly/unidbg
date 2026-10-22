@@ -213,6 +213,43 @@ public class Unicorn {
 
     private static native byte[] mem_read(long handle, long address, long size) throws UnicornException;
 
+    private static class ScalarMemorySupport {
+        static final boolean AVAILABLE = detect();
+
+        private static boolean detect() {
+            try {
+                return scalar_memory_api_version() >= 1;
+            } catch (UnsatisfiedLinkError ignored) {
+                // Existing platform binaries remain usable without this optional API.
+                return false;
+            }
+        }
+    }
+
+    private static native int scalar_memory_api_version();
+
+    public static boolean hasScalarMemoryAccess() {
+        return ScalarMemorySupport.AVAILABLE;
+    }
+
+    public long mem_read_value(long address, int size) throws UnicornException {
+        if (size != 1 && size != 2 && size != 4 && size != 8) {
+            throw new IllegalArgumentException("Invalid scalar size: " + size);
+        }
+        if (hasScalarMemoryAccess()) {
+            return mem_read_value(nativeHandle, address, size);
+        }
+        byte[] bytes = mem_read(address, size);
+        long value = 0;
+        for (int i = 0; i < size; i++) {
+            value |= (bytes[i] & 0xffL) << (i * 8);
+        }
+        return value;
+    }
+
+    private static native long mem_read_value(long handle, long address, int size) throws UnicornException;
+
+
     /**
      * Write to memory.
      *

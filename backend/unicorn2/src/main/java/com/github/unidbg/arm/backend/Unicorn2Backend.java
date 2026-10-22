@@ -90,6 +90,15 @@ class Unicorn2Backend extends AbstractBackend implements Backend {
     }
 
     @Override
+    public long mem_read_value(long address, int size) throws BackendException {
+        try {
+            return unicorn.mem_read_value(address, size);
+        } catch (UnicornException e) {
+            throw new BackendException("mem_read address=0x" + Long.toHexString(address) + ", size=" + size, e);
+        }
+    }
+
+    @Override
     public void mem_write(long address, byte[] bytes) throws BackendException {
         try {
             unicorn.mem_write(address, bytes);

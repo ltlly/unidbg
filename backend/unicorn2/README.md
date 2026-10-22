@@ -77,3 +77,17 @@ UNICORN_HOME=/path/to/unicorn ./build.sh osx_arm64
 ```
 
 Build artifacts are placed in `src/main/resources/natives/<platform>/`.
+
+## Scalar memory reads
+
+The JNI binding provides an optional scalar-memory API for little-endian 1, 2,
+4, and 8 byte reads. It uses the same Unicorn memory access checks as `mem_read`,
+without allocating a Java byte array for each value. `Unicorn.hasScalarMemoryAccess()`
+reports whether the loaded native library provides this API.
+
+The bundled Linux x86_64 library includes this optimization. Older native
+libraries, including other bundled platform libraries until rebuilt, remain
+compatible: the Java binding detects the missing optional API and falls back to
+byte-array reads. Rebuilding a platform with the commands above enables the
+scalar API on that platform. No instruction tracing or memory validation is
+turned off by this optimization.

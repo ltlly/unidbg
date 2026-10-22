@@ -234,24 +234,31 @@ public class UnidbgPointer extends Pointer implements PointerArg {
         return getByteArray(offset, 1)[0];
     }
 
+    private long getScalar(long offset, int width) {
+        if (size > 0 && offset + width > size) {
+            throw new InvalidMemoryAccessException();
+        }
+        return backend.mem_read_value(peer + offset, width);
+    }
+
     @Override
     public char getChar(long offset) {
-        return getByteBuffer(offset, 2).getChar();
+        return (char) getScalar(offset, 2);
     }
 
     @Override
     public short getShort(long offset) {
-        return getByteBuffer(offset, 2).getShort();
+        return (short) getScalar(offset, 2);
     }
 
     @Override
     public int getInt(long offset) {
-        return getByteBuffer(offset, 4).getInt();
+        return (int) getScalar(offset, 4);
     }
 
     @Override
     public long getLong(long offset) {
-        return getByteBuffer(offset, 8).getLong();
+        return getScalar(offset, 8);
     }
 
     @Override
@@ -261,12 +268,12 @@ public class UnidbgPointer extends Pointer implements PointerArg {
 
     @Override
     public float getFloat(long offset) {
-        return getByteBuffer(offset, 4).getFloat();
+        return Float.intBitsToFloat((int) getScalar(offset, 4));
     }
 
     @Override
     public double getDouble(long offset) {
-        return getByteBuffer(offset, 8).getDouble();
+        return Double.longBitsToDouble(getScalar(offset, 8));
     }
 
     @Override
