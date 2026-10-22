@@ -1,0 +1,509 @@
+JUnit version 4.13.2
+.
+>-----------------------------------------------------------------------------<
+[11:17:15 232]testHex, md5=eb1ae95b965c97dc7dca376d8351a134, hex=37ff000026f40100084c00004687000025704001583e000094eb0200140000009d469901222d0b00d52f01000c0000002a020000a02c00009d0c0000
+size: 60
+0000: 37 FF 00 00 26 F4 01 00 08 4C 00 00 46 87 00 00    7...&....L..F...
+0010: 25 70 40 01 58 3E 00 00 94 EB 02 00 14 00 00 00    %p@.X>..........
+0020: 9D 46 99 01 22 2D 0B 00 D5 2F 01 00 0C 00 00 00    .F.."-.../......
+0030: 2A 02 00 00 A0 2C 00 00 9D 0C 00 00                *....,......
+^-----------------------------------------------------------------------------^
+..regsRead=[224]
+regsWrite=[154]
+..
+>-----------------------------------------------------------------------------<
+[11:17:15 353]res content, md5=cd3a3c4e240fa3ef1cfa7cbdf6d07f69, hex=54657374207265730a
+size: 9
+0000: 54 65 73 74 20 72 65 73 0A                         Test res.
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 374]sub content, md5=be4576fc17832079299cdaa673e91a02, hex=61620a7265730a
+size: 7
+0000: 61 62 0A 72 65 73 0A                               ab.res.
+^-----------------------------------------------------------------------------^
+.Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 callStaticIntMethodV -> test/x->a()I 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 callStaticLongMethodV -> test/x->b()J 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 callStaticBooleanMethodV -> test/x->c()Z 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 callIntMethodV -> test/x->d()I 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 callObjectMethodV -> test/x->e()V 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 callStaticObjectMethodV -> test/x->f()V 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 getIntField -> test/x->g()I 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 callStaticVoidMethodV -> test/x->h()V 返回类型默认值(此签名仅警告一次)
+Oct 22, 2026 11:17:15 AM com.github.unidbg.linux.android.dvm.FallbackJni warnFallback
+WARNING: [FallbackJni] 未覆写的 setIntField -> test/x->i()V 返回类型默认值(此签名仅警告一次)
+..
+>-----------------------------------------------------------------------------<
+[11:17:15 391]StatFS32, md5=ffcc30557b181b24cb7443a5bf272c05, hex=53ef000000100000af3532000000000063572b000000000063572b0000000000b0cc0c00000000002ebd0c0000000000e89f60d36b0d9704ff0000000010000026040000000000000000000000000000000000007569643d
+size: 88
+0000: 53 EF 00 00 00 10 00 00 AF 35 32 00 00 00 00 00    S........52.....
+0010: 63 57 2B 00 00 00 00 00 63 57 2B 00 00 00 00 00    cW+.....cW+.....
+0020: B0 CC 0C 00 00 00 00 00 2E BD 0C 00 00 00 00 00    ................
+0030: E8 9F 60 D3 6B 0D 97 04 FF 00 00 00 00 10 00 00    ..`.k...........
+0040: 26 04 00 00 00 00 00 00 00 00 00 00 00 00 00 00    &...............
+0050: 00 00 00 00 75 69 64 3D                            ....uid=
+^-----------------------------------------------------------------------------^
+.address=0x40016996, b2=0, b3=0, name=ps_getpid
+address=0x3c5, b2=1, b3=3, name=pglobal_lookup
+address=0x8c6e8, b2=0, b3=0, name=__FINI_ARRAY__
+address=0x31, b2=1, b3=2, name=INIT_ARRAY__
+address=0x9, b2=1, b3=2, name=PREINIT_ARRAY__
+address=0x8dee9, b2=1, b3=1, name=start
+address=0x69f22, b2=0, b3=1, name=Unwind_Resume
+address=0x9119, b2=1, b3=1, name=ZSt9terminatev
+address=0x98d, b2=1, b3=2, name=dlPv
+address=0xa8ed, b2=0, b3=1, name=_aeabi_uidiv
+address=0x1015, b2=1, b3=9, name=nwind_cpp_pr1
+address=0x9461, b2=1, b3=2, name=cxa_begin_catch
+address=0xe85, b2=0, b3=6, name=pure_virtual
+address=0x871, b2=1, b3=2, name=gxx_personality_v0
+address=0xfac1, b2=1, b3=0, name=fopenRT
+address=0x5991, b2=1, b3=1, name=ree_debug_event
+address=0x76c1, b2=0, b3=0, name=qalloc_or_throw
+address=0x69d, b2=1, b3=1, name=fclose
+address=0xd75, b2=1, b3=2, name=indclose
+address=0x129, b2=1, b3=5, name=first
+address=0x91, b2=1, b3=5, name=next
+address=0x8b9, b2=1, b3=2, name=open
+address=0x169d, b2=0, b3=2, name=read
+address=0x747, b2=0, b3=4, name=e
+address=0xf7, b2=1, b3=1, name=getline
+address=0x2ead, b2=0, b3=1, name=snprintf
+address=0x8d, b2=0, b3=2, name=scanf
+address=0x2d3d, b2=1, b3=1, name=vector_reserve
+address=0x2f09, b2=0, b3=0, name=str2user
+address=0xa4f9, b2=0, b3=0, name=_ZNSt11logic_errorC2EPKc
+address=0x2091, b2=0, b3=6, name=2length_errorD1Ev
+address=0x2f6ec, b2=0, b3=2, name=TISt11logic_error
+address=0x4d, b2=0, b3=7, name=2length_error
+address=0xd5, b2=1, b3=6, name=9exception
+address=0xf02c, b2=1, b3=3, name=SSt11logic_error
+address=0x40, b2=0, b3=7, name=2length_error
+address=0xdb, b2=1, b3=6, name=9exception
+address=0xef93, b2=0, b3=3, name=VN10__cxxabiv117__class_type_infoE
+address=0x29, b2=0, b3=17, name=20__si_class_type_infoE
+address=0x1cd, b2=0, b3=4, name=St12length_error
+address=0x31994, b2=1, b3=2, name=nwj
+address=0xa9fd, b2=0, b3=1, name=_aeabi_idiv
+address=0x9d, b2=0, b3=12, name=mod
+address=0xb1, b2=1, b3=8, name=uidivmod
+address=0x10cd, b2=1, b3=9, name=nwind_cpp_pr0
+address=0x95c5, b2=1, b3=2, name=cxa_allocate_exception
+address=0x2b, b2=0, b3=6, name=free_exception
+address=0x33, b2=0, b3=6, name=throw
+address=0x15e91, b2=1, b3=0, name=calc_file_crc32
+address=0x492b4, b2=0, b3=3, name=lui
+address=0x42efc, b2=1, b3=1, name=lose_linput
+address=0x5191, b2=1, b3=1, name=opy_debug_event
+address=0x4aea0, b2=0, b3=0, name=debug
+address=0x435cc, b2=1, b3=2, name=l_qatexit
+address=0xee91, b2=1, b3=0, name=get_elf_debug_file_directory
+address=0xee45, b2=0, b3=0, name=interr
+address=0x28e1, b2=1, b3=0, name=open_linput
+address=0x2819, b2=0, b3=0, name=qatexit
+address=0x13a9, b2=1, b3=1, name=basename
+address=0x71, b2=1, b3=1, name=dirname
+address=0x851, b2=0, b3=1, name=fileexist
+address=0x2cb1, b2=0, b3=1, name=getenv
+address=0x3331, b2=1, b3=1, name=isabspath
+address=0x1b5, b2=0, b3=1, name=make_full_path
+address=0x4d1, b2=1, b3=5, name=path
+address=0xa71, b2=0, b3=1, name=stat
+address=0x91d, b2=0, b3=3, name=rdup
+address=0xb45, b2=0, b3=4, name=ncpy
+address=0x14d, b2=1, b3=4, name=tok
+address=0x1fc9, b2=0, b3=1, name=vsnprintf
+address=0x641, b2=1, b3=1, name=wait_timed
+address=0x9791, b2=1, b3=0, name=set_debug_event_code
+address=0xa753, b2=0, b3=1, name=kip_spaces
+address=0x153, b2=1, b3=1, name=tristr
+address=0x406d4, b2=0, b3=0, name=under_debugger
+
+>-----------------------------------------------------------------------------<
+[11:17:15 397]Remaining, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+address=0x40068392, b2=0, b3=0, name=verror
+address=0x93cd, b2=1, b3=1, name=show_hex
+address=0x940d, b2=0, b3=0, name=winerr
+address=0x17875, b2=0, b3=0, name=__aeabi_llsr
+address=0x775, b2=0, b3=9, name=mul
+address=0x4e, b2=1, b3=8, name=uldivmod
+address=0xa904, b2=1, b3=2, name=cxa_guard_acquire
+address=0x75, b2=0, b3=12, name=release
+address=0xfded, b2=1, b3=0, name=lreadbytes
+address=0x209, b2=1, b3=0, name=qlread
+address=0x47, b2=0, b3=2, name=seek
+address=0x25, b2=1, b3=3, name=ize
+address=0x2f6f, b2=0, b3=1, name=stpncpy
+address=0x2ae9, b2=1, b3=0, name=swap64
+address=0x715, b2=0, b3=0, name=unpack_xleb128
+address=0x4aad, b2=0, b3=0, name=call_system
+address=0x38321, b2=1, b3=1, name=ompile_idc_file
+address=0x391, b2=0, b3=12, name=text
+address=0x7ac9, b2=0, b3=0, name=del_idcv_attr
+address=0x679d, b2=1, b3=0, name=eval_expr
+address=0x441, b2=0, b3=5, name=idc_snippet
+address=0x124d, b2=0, b3=0, name=find_idc_class
+address=0x3305, b2=0, b3=2, name=rst_idcv_attr
+address=0x2ecc5, b2=0, b3=1, name=readbytes
+address=0x2e91f, b2=1, b3=3, name=e_idcv
+address=0x2e98b, b2=0, b3=1, name=writebytes
+address=0x2e24d, b2=1, b3=0, name=get_idcv_attr
+address=0x2ebb9, b2=0, b3=4, name=nsec_stamp
+address=0x2e801, b2=1, b3=0, name=idcv_object
+address=0xb7d, b2=0, b3=0, name=last_idcv_attr
+address=0x2df89, b2=0, b3=0, name=memrev
+address=0x2f979, b2=1, b3=0, name=next_idcv_attr
+address=0x1a35, b2=0, b3=0, name=prev_idcv_attr
+address=0x2d3bf, b2=0, b3=0, name=qfgetc
+address=0x29, b2=1, b3=2, name=putc
+address=0xe7, b2=0, b3=5, name=s
+address=0x51f, b2=1, b3=2, name=seek
+address=0x6033, b2=1, b3=3, name=ize
+address=0x5fff, b2=0, b3=2, name=tell
+address=0x367, b2=1, b3=1, name=mkdir
+address=0x305f, b2=0, b3=2, name=utex_lock
+address=0xf, b2=0, b3=7, name=unlock
+address=0x2c29, b2=1, b3=1, name=rename
+address=0x2c39, b2=0, b3=1, name=setenv
+address=0x20dd, b2=1, b3=2, name=leep
+address=0xb89, b2=1, b3=1, name=unlink
+address=0x82a5, b2=1, b3=0, name=rotate_left
+address=0x1e8d, b2=0, b3=0, name=set_error_string
+address=0x27709, b2=1, b3=4, name=idcv_attr
+address=0x27695, b2=0, b3=4, name=qerrno
+address=0x34041, b2=1, b3=0, name=throw_idc_exception
+address=0x87fd, b2=0, b3=0, name=add_idc_class
+address=0x2609, b2=0, b3=0, name=copy_idcv
+address=0x26aa1, b2=0, b3=0, name=get_aflags
+address=0x27c9, b2=0, b3=4, name=qerrno
+address=0x1a0d1, b2=1, b3=0, name=lex_get_file_line
+address=0x2d27, b2=0, b3=8, name=token
+address=0x2e4b, b2=1, b3=4, name=init_file
+address=0x3acb, b2=1, b3=9, name=string
+address=0x6b87, b2=0, b3=4, name=print_token
+address=0x2fa1, b2=1, b3=4, name=term_file
+address=0x20aa1, b2=0, b3=0, name=qalloc
+address=0xe95, b2=0, b3=1, name=strerror
+address=0x1eb0d, b2=1, b3=0, name=set_header_path
+address=0xfac1, b2=1, b3=1, name=wap_idcvs
+address=0x26c2d, b2=0, b3=0, name=utf8_utf16
+address=0x1e969, b2=0, b3=0, name=__aeabi_llsl
+address=0x46785, b2=1, b3=0, name=idcv_float
+address=0x1ad, b2=1, b3=5, name=int64
+address=0xf1, b2=1, b3=5, name=long
+address=0x509, b2=1, b3=5, name=string
+address=0x2ac9d, b2=0, b3=0, name=realtoasc
+address=0x27005, b2=1, b3=0, name=call_idc_func
+address=0x8465, b2=1, b3=0, name=eval_expr_long
+address=0x5d, b2=1, b3=5, name=idc_expr
+address=0xe9, b2=0, b3=1, name=xec_system_script
+address=0x381, b2=1, b3=0, name=find_extlang
+address=0x125, b2=1, b3=1, name=or_all_extlangs
+address=0x91, b2=1, b3=0, name=get_current_extlang
+address=0x158cd, b2=0, b3=4, name=idc_filename
+address=0x152e9, b2=0, b3=4, name=name_value
+
+>-----------------------------------------------------------------------------<
+[11:17:15 399]Remaining, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+address=0x4003433a, b2=0, b3=0, name=install_extlang
+address=0xc1, b2=0, b3=0, name=remove_extlang
+address=0x1ed, b2=1, b3=0, name=select_extlang
+address=0x41015, b2=0, b3=0, name=_ZdaPv
+address=0x2b, b2=1, b3=2, name=naj
+address=0x3ed37, b2=1, b3=0, name=add_idc_func
+address=0xad1, b2=1, b3=8, name=gvar
+address=0x1a73, b2=0, b3=0, name=code_highlight_block
+address=0x2d67, b2=1, b3=2, name=mpile_idc_snippet
+address=0xf04f, b2=0, b3=1, name=reate_lexer
+address=0xd027, b2=1, b3=0, name=del_idc_func
+address=0xd059, b2=0, b3=2, name=stroy_lexer
+address=0xcfd5, b2=1, b3=0, name=find_idc_func
+address=0xe29, b2=1, b3=9, name=gvar
+address=0x503d, b2=0, b3=0, name=get_idcv_class_name
+address=0x6ea94, b2=0, b3=0, name=is_ida_kernel
+address=0x43084, b2=1, b3=0, name=pack_dd
+address=0x1aaf, b2=0, b3=0, name=qcalloc
+address=0xfe7, b2=0, b3=1, name=mutex_create
+address=0x167b, b2=0, b3=7, name=free
+address=0x34183, b2=1, b3=0, name=set_idc_dtor
+address=0x261, b2=1, b3=8, name=getattr
+address=0x151, b2=1, b3=8, name=method
+address=0x281, b2=0, b3=8, name=setattr
+address=0x30339, b2=0, b3=0, name=unpack_dd
+address=0x40534, b2=0, b3=0, name=_ZTISt9bad_alloc
+address=0xf0a0, b2=1, b3=3, name=SSt9bad_alloc
+address=0x17d99, b2=1, b3=1, name=_aeabi_lasr
+address=0x6cc, b2=0, b3=9, name=divmod
+address=0xac2c, b2=1, b3=2, name=cxa_end_catch
+address=0x12521, b2=1, b3=0, name=asctoreal
+address=0x2aef1, b2=1, b3=0, name=create_idcv_ref
+address=0x2449, b2=0, b3=0, name=deep_copy_idcv
+address=0x2665, b2=1, b3=2, name=ref_idcv
+address=0x29fd1, b2=0, b3=0, name=eadd
+address=0x2bd, b2=0, b3=1, name=cmp
+address=0x4d1, b2=0, b3=1, name=div
+address=0x581, b2=0, b3=1, name=etol
+address=0x1c9, b2=0, b3=5, name=64
+address=0x79, b2=0, b3=1, name=ltoe
+address=0x9d, b2=0, b3=5, name=64
+address=0xbad, b2=1, b3=1, name=mul
+address=0x28f01, b2=1, b3=0, name=get_idcv_slice
+address=0x199, b2=1, b3=0, name=idcv_num
+address=0x2f8b5, b2=0, b3=1, name=s_main_thread
+address=0x2fccd, b2=1, b3=0, name=move_idcv
+address=0xc81, b2=1, b3=0, name=print_idcv
+address=0x32941, b2=0, b3=0, name=qstr2user
+address=0x9885, b2=1, b3=0, name=set_error_data
+address=0x27599, b2=1, b3=4, name=idcv_slice
+address=0x3aca1, b2=0, b3=0, name=_ZNSt6__ndk112__next_primeEj
+address=0xb764, b2=0, b3=1, name=_aeabi_f2uiz
+address=0x51, b2=1, b3=9, name=cmplt
+address=0x20d, b2=1, b3=9, name=div
+address=0x199, b2=1, b3=9, name=mul
+address=0xb5, b2=1, b3=8, name=ui2f
+address=0x14a10, b2=1, b3=0, name=back_char
+address=0x6745, b2=1, b3=0, name=get_ida_subdirs
+address=0x111, b2=1, b3=3, name=sysfile
+address=0x209a1, b2=1, b3=0, name=lex_define_macro
+address=0x839, b2=1, b3=4, name=enum_macros
+address=0x677d, b2=0, b3=4, name=get_token2
+address=0x69e1, b2=1, b3=4, name=set_options
+address=0x11ed, b2=0, b3=4, name=undefine_macro
+address=0x23c99, b2=0, b3=0, name=qctime
+address=0x6fe1, b2=1, b3=1, name=errcode
+address=0x59b5, b2=0, b3=1, name=getcwd
+address=0x53d, b2=0, b3=1, name=isdir
+address=0x1bd01, b2=1, b3=0, name=basic_parser_parse
+address=0x1cdbd, b2=0, b3=0, name=qtime64
+address=0x2755, b2=1, b3=0, name=create_bytearray_linput
+address=0x655d, b2=0, b3=7, name=zip_linput
+address=0x624d, b2=1, b3=0, name=fopenRB
+address=0x91, b2=0, b3=5, name=WB
+address=0x2d5, b2=0, b3=0, name=pack_dq
+address=0x65, b2=1, b3=6, name=w
+address=0x4e55, b2=1, b3=0, name=qerrstr
+address=0x616d, b2=0, b3=1, name=fwrite
+address=0x697, b2=0, b3=1, name=realloc
+address=0x2db3, b2=0, b3=1, name=vprintf
+
+>-----------------------------------------------------------------------------<
+[11:17:15 401]Remaining, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+address=0x4006a5e2, b2=0, b3=0, name=swap_value
+address=0x3fed, b2=1, b3=0, name=unpack_dq
+address=0xe5, b2=1, b3=8, name=w
+address=0x784d, b2=1, b3=0, name=vloader_failure
+address=0x289d, b2=0, b3=0, name=get_error_data
+address=0x35, b2=0, b3=10, name=string
+address=0x84a9, b2=0, b3=0, name=launch_process
+address=0xdb1, b2=0, b3=0, name=relocate_relobj
+address=0xa105, b2=1, b3=0, name=cliopts_t_apply
+address=0x7c69, b2=0, b3=0, name=qexit
+address=0x8e15, b2=1, b3=0, name=bitcount
+address=0xe8d, b2=0, b3=0, name=cliopts_t_add
+address=0x7c41, b2=0, b3=0, name=qhost2addr_
+address=0x23e1, b2=0, b3=1, name=sem_create
+address=0xab, b2=0, b3=5, name=free
+address=0xbd7, b2=1, b3=5, name=post
+address=0x5fd, b2=1, b3=5, name=wait
+address=0x2a9, b2=0, b3=1, name=thread_create
+address=0xe65, b2=0, b3=8, name=free
+address=0x845, b2=0, b3=1, name=veprintf
+address=0x249d, b2=1, b3=1, name=strftime64
+address=0x2401, b2=0, b3=1, name=vfprintf
+address=0xc811, b2=0, b3=0, name=_ZNSt9exceptionD2Ev
+address=0x186d1, b2=1, b3=0, name=add_undo_record
+address=0x4a798, b2=0, b3=0, name=dbg
+address=0x4a7aa, b2=1, b3=0, name=func_has_stkframe_hole
+address=0xf, b2=1, b3=0, name=get_idp_name
+address=0x1d, b2=0, b3=4, name=undo_param
+address=0xf, b2=0, b3=0, name=is_replaying_undo
+address=0x4b, b2=0, b3=0, name=lread
+address=0x4f, b2=1, b3=0, name=must_journal
+address=0x33, b2=1, b3=0, name=nbits
+address=0x31, b2=0, b3=0, name=register_undo_handlers
+address=0x13, b2=1, b3=0, name=set_ida_state
+address=0x627, b2=0, b3=0, name=vshow_hex_file
+address=0x2c1, b2=0, b3=0, name=extend_sign
+address=0x259, b2=1, b3=0, name=log2ceil
+address=0x113, b2=0, b3=4, name=floor
+address=0x255, b2=0, b3=0, name=round_down_power2
+address=0x1b, b2=1, b3=6, name=up_power2
+address=0x35, b2=0, b3=0, name=calc_crc32
+address=0xd95, b2=0, b3=1, name=liopts_t_find_long
+address=0x35, b2=1, b3=15, name=short
+address=0x81, b2=0, b3=10, name=usage
+address=0x11e9, b2=0, b3=0, name=get_errdesc
+address=0x1f09, b2=1, b3=0, name=parse_command_line
+address=0x959, b2=0, b3=6, name=dbgopts
+address=0xb15d, b2=0, b3=0, name=qcleanline
+address=0xb30d, b2=1, b3=1, name=uote_cmdline_arg
+address=0xd01, b2=0, b3=0, name=get_utf8_char
+address=0x49, b2=1, b3=0, name=is_valid_utf8
+address=0x16d, b2=0, b3=0, name=prev_utf8_char
+address=0xb5, b2=0, b3=1, name=ut_utf8_char
+address=0x231, b2=1, b3=0, name=qstrlen
+address=0x31d, b2=0, b3=1, name=ustrlen
+address=0x49, b2=0, b3=5, name=ncpy
+address=0xa9, b2=1, b3=0, name=skip_utf8
+address=0x189, b2=0, b3=0, name=utf16_utf8
+address=0x1fff5, b2=0, b3=0, name=__emutls_get_address
+address=0x1f9a1, b2=1, b3=0, name=vqperror
+address=0x1955, b2=0, b3=0, name=eetol64u
+address=0xb7d, b2=1, b3=1, name=ldexp
+address=0xd11, b2=0, b3=2, name=toe64u
+address=0x15b5, b2=1, b3=1, name=mdnorm
+address=0x35, b2=1, b3=2, name=ovi
+address=0x2d, b2=1, b3=4, name=o
+address=0x2cd, b2=1, b3=1, name=shift
+address=0x2e79, b2=0, b3=0, name=get_fpvalue_kind
+address=0xbad, b2=0, b3=4, name=special_folder
+address=0x215, b2=1, b3=4, name=user_idadir
+address=0x649, b2=1, b3=0, name=idadir
+address=0x129, b2=1, b3=0, name=search_path
+address=0x2271, b2=0, b3=0, name=vqmakepath
+address=0x1195, b2=1, b3=0, name=create_generic_linput
+address=0x3b, b2=0, b3=0, name=make_linput
+address=0x22a7, b2=0, b3=0, name=qfgets
+address=0x685, b2=1, b3=2, name=ilelength
+address=0x1aa3, b2=1, b3=1, name=lfile
+address=0x107, b2=0, b3=2, name=getc
+address=0xf5, b2=1, b3=5, name=s
+address=0x199, b2=0, b3=5, name=z
+address=0x1675, b2=0, b3=1, name=read
+
+>-----------------------------------------------------------------------------<
+[11:17:15 403]Remaining, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+address=0x40173d61, b2=0, b3=0, name=_ZTISt11range_error
+address=0x8d, b2=1, b3=7, name=2domain_error
+address=0x61, b2=0, b3=8, name=out_of_range
+address=0x21, b2=0, b3=7, name=3runtime_error
+address=0x2d, b2=0, b3=7, name=4overflow_error
+address=0x21, b2=0, b3=7, name=5underflow_error
+address=0xad, b2=1, b3=7, name=6invalid_argument
+address=0x30e4, b2=1, b3=3, name=SSt11logic_error
+address=0x71, b2=0, b3=8, name=range_error
+address=0x82, b2=1, b3=7, name=2domain_error
+address=0x51, b2=0, b3=8, name=length_error
+address=0x21, b2=0, b3=8, name=out_of_range
+address=0x31, b2=0, b3=7, name=3runtime_error
+address=0x21, b2=0, b3=7, name=4overflow_error
+address=0x21, b2=0, b3=7, name=5underflow_error
+address=0xb1, b2=1, b3=7, name=6invalid_argument
+address=0x3111, b2=0, b3=3, name=VSt11range_error
+address=0x8d, b2=1, b3=7, name=2domain_error
+address=0x6d, b2=0, b3=8, name=out_of_range
+address=0x4d, b2=0, b3=7, name=4overflow_error
+address=0x21, b2=0, b3=7, name=5underflow_error
+address=0xad, b2=1, b3=7, name=6invalid_argument
+address=0xf6dc, b2=1, b3=2, name=NKSt10bad_typeid4whatEv
+address=0x31, b2=1, b3=6, name=8bad_cast4whatEv
+address=0xd, b2=0, b3=3, name=St10bad_typeidC1Ev
+address=0x1, b2=0, b3=18, name=2Ev
+address=0x15, b2=0, b3=17, name=D0Ev
+address=0x5, b2=1, b3=18, name=1Ev
+address=0x1, b2=0, b3=18, name=2Ev
+address=0x41, b2=1, b3=5, name=8bad_castC1Ev
+address=0x1, b2=0, b3=15, name=2Ev
+address=0x15, b2=0, b3=14, name=D0Ev
+address=0x5, b2=1, b3=15, name=1Ev
+address=0x1, b2=0, b3=15, name=2Ev
+address=0x17, b2=1, b3=5, name=9type_infoD0Ev
+address=0x3, b2=1, b3=16, name=1Ev
+address=0xf850, b2=0, b3=2, name=TISt10bad_typeid
+address=0xd, b2=1, b3=6, name=8bad_cast
+address=0x30e0, b2=1, b3=3, name=SSt10bad_typeid
+address=0xd, b2=1, b3=6, name=8bad_cast
+address=0xe, b2=1, b3=6, name=9type_info
+address=0x30cd, b2=0, b3=3, name=VSt10bad_typeid
+address=0x15, b2=1, b3=6, name=8bad_cast
+address=0x29, b2=0, b3=6, name=9type_info
+address=0xf734, b2=1, b3=2, name=St13set_terminatePFvvE
+address=0x31, b2=1, b3=5, name=4set_unexpectedPFvvE
+address=0x16d, b2=0, b3=1, name=_cxa_demangle
+
+>-----------------------------------------------------------------------------<
+[11:17:15 404]Remaining, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+.b0=0x1, base=0x40000001, b1=0x0, d=true, r=true, w=false, x=true, size=0x2001, mask=0x15, name=/system/lib/libttEncrypt.so, b2=0
+b0=0x1, base=0x40003001, b1=0x0, d=true, r=true, w=true, x=false, size=0x2001, mask=0x16, name=/system/lib/libttEncrypt.so, b2=0
+b0=0x1, base=0x40005001, b1=0x0, d=true, r=true, w=false, x=true, size=0x5001, mask=0x15, name=/system/lib/libstdc++.so, b2=0
+b0=0x1, base=0x4000a001, b1=0x0, d=true, r=true, w=true, x=false, size=0x2001, mask=0x16, name=/system/lib/libstdc++.so, b2=0
+b0=0x1, base=0x4000c001, b1=0x0, d=true, r=true, w=false, x=true, size=0x73001, mask=0x15, name=/system/lib/libc.so, b2=0
+b0=0x1, base=0x4007f001, b1=0x0, d=true, r=true, w=true, x=false, size=0x11001, mask=0x16, name=/system/lib/libc.so, b2=0
+b0=0x1, base=0x40090001, b1=0x0, d=true, r=true, w=false, x=true, size=0x2001, mask=0x15, name=/system/lib/libdl.so, b2=0
+b0=0x1, base=0x40092001, b1=0x0, d=true, r=true, w=true, x=false, size=0x2001, mask=0x16, name=/system/lib/libdl.so, b2=0
+b0=0x1, base=0x40094001, b1=0x0, d=true, r=true, w=false, x=true, size=0x1f001, mask=0x15, name=/system/lib/libm.so, b2=0
+b0=0x1, base=0x400b4001, b1=0x0, d=true, r=true, w=true, x=false, size=0x2001, mask=0x16, name=/system/lib/libm.so, b2=0
+b0=0x1, base=0x40180001, b1=0x0, d=true, r=true, w=false, x=true, size=0x1b001, mask=0x15, name=/system/lib/libhookzz.so, b2=0
+b0=0x1, base=0x4019c001, b1=0x0, d=true, r=true, w=true, x=false, size=0x3001, mask=0x16, name=/system/lib/libhookzz.so, b2=0
+b0=0x1, base=0x4019f001, b1=0x0, d=true, r=true, w=false, x=true, size=0x8001, mask=0x15, name=/system/lib/liblog.so, b2=0
+b0=0x1, base=0x401a7001, b1=0x0, d=true, r=true, w=true, x=false, size=0x2001, mask=0x16, name=/system/lib/liblog.so, b2=0
+b0=0x1, base=0x401ab001, b1=0x0, d=true, r=true, w=false, x=true, size=0x88001, mask=0x15, name=/system/lib/libc++.so, b2=0
+b0=0x1, base=0x40234001, b1=0x0, d=true, r=true, w=true, x=false, size=0x6001, mask=0x16, name=/system/lib/libc++.so, b2=0
+b0=0x1, base=0x4023a001, b1=0x0, d=true, r=true, w=false, x=true, size=0x6001, mask=0x15, name=/system/lib/libxhook.so, b2=0
+b0=0x1, base=0x40240001, b1=0x0, d=true, r=true, w=true, x=false, size=0x2001, mask=0x16, name=/system/lib/libxhook.so, b2=0
+b0=0x1, base=0xbfe00001, b1=0x0, d=true, r=true, w=true, x=false, size=0x200001, mask=0x16, name=[stack], b2=0
+b0=0x1, base=0xfffe0001, b1=0x0, d=true, r=true, w=false, x=true, size=0x10001, mask=0x15, name=[svc], b2=0
+b0=0x1, base=0xffff0001, b1=0x0, d=true, r=true, w=false, x=true, size=0x10001, mask=0x15, name=[kernel], b2=0
+..
+>-----------------------------------------------------------------------------<
+[11:17:15 405]type=2, magic=128, pid=35174, tid=35174, pc=0x40154001, s1=1, path=/system/lib/libstdc++.so, base=0x40154001, b1=0, size=0x3001, b2=0, test=0x0, dylib=true, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 405]type=2, magic=128, pid=35174, tid=35174, pc=0x4014f001, s1=1, path=/system/lib/liblog.so, base=0x4014f001, b1=0, size=0x5001, b2=0, test=0x0, dylib=true, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 406]type=2, magic=128, pid=35174, tid=35174, pc=0x40147001, s1=1, path=/system/lib/libxhook.so, base=0x40147001, b1=0, size=0x8001, b2=0, test=0x0, dylib=true, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 406]type=2, magic=128, pid=35174, tid=35174, pc=0x4010b001, s1=1, path=/system/lib/libm.so, base=0x4010b001, b1=0, size=0x1b001, b2=0, test=0x0, dylib=true, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 406]type=2, magic=128, pid=35174, tid=35174, pc=0x40107001, s1=1, path=/system/lib/libdl.so, base=0x40107001, b1=0, size=0x4001, b2=0, test=0x0, dylib=true, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 406]type=2, magic=128, pid=35174, tid=35174, pc=0x400ac001, s1=1, path=/system/lib/libc.so, base=0x400ac001, b1=0, size=0x5b001, b2=0, test=0x0, dylib=true, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 406]type=2, magic=1, pid=35174, tid=35174, pc=0x400cc115, s1=1, path=/system/bin/android_server_7.4, base=0x40000001, b1=0, size=0xa2001, b2=0, test=0x40000001, dylib=false, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+
+>-----------------------------------------------------------------------------<
+[11:17:15 407]type=1, magic=1024, pid=35174, tid=35174, pc=0x400cc115, s1=1, path=/system/bin/android_server_7.4, base=0x40000001, b1=0, size=0xa2001, b2=0, test=0x40000001, dylib=false, md5=d41d8cd98f00b204e9800998ecf8427e, hex=
+size: 0
+^-----------------------------------------------------------------------------^
+..
+Time: 0.243
+
+OK (14 tests)
+

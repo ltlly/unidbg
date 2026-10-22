@@ -1,0 +1,10 @@
+{
+  "upstream_commit": "2ba8156eef31501ebd35194adb5795ef3e01a285",
+  "runtime": "openjdk version \"1.8.0_504\"\nOpenJDK Runtime Environment (Temurin)(build 1.8.0_504-b01)\nOpenJDK 64-Bit Server VM (Temurin)(build 25.504-b01, mixed mode)",
+  "platform": "Linux-6.18.55-x86_64-with-glibc2.41",
+  "machine": "x86_64",
+  "baseline_result_count": 40,
+  "tests": "14 passed; initial missing target directory was setup error, fixed and rerun.",
+  "legacy_unicorn": "unavailable: native unicorn_java library not loadable on this machine; not silently substituted.",
+  "scope": "Unicorn2 ARM32/ARM64 integer-array transfer, not whole-application performance."
+}

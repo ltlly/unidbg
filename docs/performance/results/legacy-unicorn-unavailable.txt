@@ -1,0 +1,23 @@
+SAMPLE phase=baseline backend_unicorn2=false arm64=false count=1 run=1
+Exception in thread "main" java.lang.ExceptionInInitializerError
+	at com.github.unidbg.arm.backend.UnicornBackend.<init>(UnicornBackend.java:22)
+	at com.github.unidbg.arm.backend.BackendFactory.createBackend(BackendFactory.java:44)
+	at com.github.unidbg.AbstractEmulator.<init>(AbstractEmulator.java:88)
+	at com.github.unidbg.arm.AbstractARMEmulator.<init>(AbstractARMEmulator.java:59)
+	at com.github.unidbg.linux.android.AndroidARMEmulator.<init>(AndroidARMEmulator.java:35)
+	at com.github.unidbg.linux.android.AndroidEmulatorBuilder.build(AndroidEmulatorBuilder.java:22)
+	at com.github.unidbg.performance.IntArrayBenchmark.main(IntArrayBenchmark.java:25)
+Caused by: java.lang.IllegalStateException: java.io.IOException: Couldn't load library library unicorn_java
+	at unicorn.Unicorn.<clinit>(Unicorn.java:45)
+	... 7 more
+Caused by: java.io.IOException: Couldn't load library library unicorn_java
+	at org.scijava.nativelib.NativeLoader.loadLibrary(NativeLoader.java:141)
+	at unicorn.Unicorn.<clinit>(Unicorn.java:43)
+	... 7 more
+Caused by: java.lang.UnsatisfiedLinkError: no unicorn_java in java.library.path
+	at java.lang.ClassLoader.loadLibrary(ClassLoader.java:1860)
+	at java.lang.Runtime.loadLibrary0(Runtime.java:843)
+	at java.lang.System.loadLibrary(System.java:1136)
+	at org.scijava.nativelib.NativeLoader.loadLibrary(NativeLoader.java:136)
+	... 8 more
+{"exit_code": 1, "wall_seconds": 0.14253993200009063, "child_user_seconds": 0.21889999999999998, "child_system_seconds": 0.01987, "peak_rss_kib": 39576, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
