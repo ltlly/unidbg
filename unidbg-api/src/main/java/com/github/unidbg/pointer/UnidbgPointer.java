@@ -293,8 +293,18 @@ public class UnidbgPointer extends Pointer implements PointerArg {
         }
 
         int[] array = new int[arraySize];
-        for (int i = 0; i < arraySize; i++) {
-            array[i] = getInt(offset + i * 4);
+        // Bound temporary memory while amortizing Java/native crossings. Do not
+        // cache guest bytes: callers must observe writes made between reads.
+        for (int start = 0; start < arraySize; ) {
+            int count = Math.min(arraySize - start, 1024);
+            byte[] data = getByteArray(offset + start * 4L, count * 4);
+            for (int i = 0, position = 0; i < count; i++, position += 4) {
+                array[start + i] = (data[position] & 0xff) |
+                        ((data[position + 1] & 0xff) << 8) |
+                        ((data[position + 2] & 0xff) << 16) |
+                        (data[position + 3] << 24);
+            }
+            start += count;
         }
         return array;
     }

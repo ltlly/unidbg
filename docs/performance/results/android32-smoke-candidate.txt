@@ -1,0 +1,167 @@
+JNIEnv->FindClass(com/github/unidbg/android/AndroidTest) was called from RX@0x12180901[libnative.so]0x901
+JNIEnv->GetStaticMethodID(com/github/unidbg/android/AndroidTest.testStaticFloat(FD)F) => 0x7fffb421 was called from RX@0x12180951[libnative.so]0x951
+JNIEnv->GetStaticMethodID(com/github/unidbg/android/AndroidTest.testStaticDouble(FD)D) => 0xd3c5d256 was called from RX@0x12180967[libnative.so]0x967
+JNIEnv->GetStaticFieldID(com/github/unidbg/android/AndroidTest.staticBooleanFieldZ) => 0xd04adf3a was called from RX@0x1218097d[libnative.so]0x97d
+JNIEnv->GetStaticFieldID(com/github/unidbg/android/AndroidTest.staticDoubleFieldD) => 0x51e05d0b was called from RX@0x12180995[libnative.so]0x995
+JNIEnv->GetStaticFieldID(com/github/unidbg/android/AndroidTest.staticFloatFieldF) => 0xbd321072 was called from RX@0x121809ad[libnative.so]0x9ad
+callStaticFloatMethod f1=0.0012345678, d2=0.00456789123456
+JNIEnv->CallStaticFloatMethod(class com/github/unidbg/android/AndroidTest, testStaticFloat(0.001235F, 0.00456789123456D) => 0.0033942016) was called from RX@0x121809d1[libnative.so]0x9d1
+staticFloatField value=1.0033942
+JNIEnv->SetStaticFloatField(class com/github/unidbg/android/AndroidTest, staticFloatField, 1.0033942) was called from RX@0x121809ef[libnative.so]0x9ef
+JNIEnv->CallStaticDoubleMethod(class com/github/unidbg/android/AndroidTest, testStaticDouble(0.001235F, 0.00456789123456D) => 0.0023942017) was called from RX@0x12180a0d[libnative.so]0xa0d
+staticDoubleField value=2.0023942017
+JNIEnv->SetStaticDoubleField(class com/github/unidbg/android/AndroidTest, staticDoubleField, 2.0023942017) was called from RX@0x12180a2f[libnative.so]0xa2f
+JNIEnv->GetStaticBooleanField(class com/github/unidbg/android/AndroidTest, staticBooleanField => true) was called from RX@0x12180a3d[libnative.so]0xa3d
+JNIEnv->GetMethodID(com/github/unidbg/android/AndroidTest.<init>()V) => 0x2188eb69 was called from RX@0x12180a53[libnative.so]0xa53
+JNIEnv->NewObject(class com/github/unidbg/android/AndroidTest, <init>() => com.github.unidbg.android.AndroidTest@1761e840) was called from RX@0x12180a5f[libnative.so]0xa5f
+JNIEnv->GetFieldID(com/github/unidbg/android/AndroidTest.doubleField D) => 0xbc262d59 was called from RX@0x12180a73[libnative.so]0xa73
+JNIEnv->GetFieldID(com/github/unidbg/android/AndroidTest.floatField F) => 0xe9e9fe64 was called from RX@0x12180a87[libnative.so]0xa87
+floatField value=3.0033941
+JNIEnv->SetFloatField(com.github.unidbg.android.AndroidTest@1761e840, floatField => 3.0033941) was called from RX@0x12180aa1[libnative.so]0xaa1
+doubleField value=4.0023942017
+JNIEnv->SetDoubleField(com.github.unidbg.android.AndroidTest@1761e840, doubleField => 4.0023942017) was called from RX@0x12180abb[libnative.so]0xabb
+Dirent(unidbg@0xe4fff630) (280 bytes) {
+  long d_ino@0x0=0x00000000
+  long d_off@0x8=0x00000000
+  short d_reclen@0x10=0x00
+  byte d_type@0x12=0x0
+  byte d_name[256]@0x13=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+}
+Find native function Java_com_github_unidbg_android_JniTest_testJni => RX@0x12180729[libnative.so]0x729
+JNIEnv->GetStringUtfChars("com.github.unidbg.android.AndroidTest") was called from RX@0x1218074b[libnative.so]0x74b
+JNIEnv->GetStringUtfChars("com.github.unidbg.android.AndroidTest") was called from RX@0x121807b1[libnative.so]0x7b1
+JNIEnv->GetStringUtfChars("com.github.unidbg.android.AndroidTest") was called from RX@0x121807c1[libnative.so]0x7c1
+JNIEnv->GetStaticMethodID(com/github/unidbg/android/JniTest.nestedRun(Ljava/lang/String;JID)J) => 0x44195eb8 was called from RX@0x121807d7[libnative.so]0x7d7
+nestedRunInJava l1=0x123456789abcdef, i1=0x789a, d1=0.12345, str=com.github.unidbg.android.AndroidTest
+Find native function Java_com_github_unidbg_android_JniTest_nestedRun => RX@0x12180869[libnative.so]0x869
+JNIEnv->GetStringUtfChars("com.github.unidbg.android.AndroidTest") was called from RX@0x12180883[libnative.so]0x883
+JNIEnv->ReleaseStringUTFChars("com.github.unidbg.android.AndroidTest") was called from RX@0x121808b1[libnative.so]0x8b1
+JNIEnv->ReleaseStringUTFChars("com.github.unidbg.android.AndroidTest") was called from RX@0x1218082b[libnative.so]0x82b
+JNIEnv->ReleaseStringUTFChars("com.github.unidbg.android.AndroidTest") was called from RX@0x12180839[libnative.so]0x839
+JNIEnv->ReleaseStringUTFChars("com.github.unidbg.android.AndroidTest") was called from unidbg@0xffff0000
+constructor sdk=23
+JNI_OnLoad floatValue=0.003394F, doubleValue=0.002394D, booleanValue=1, sizeof(jfloat)=4, sizeof(jdouble)=8
+testJni str=com.github.unidbg.android.AndroidTest, l1=0x123456789abcdef, i=0x789a, d1=0.123450, b=1, s=0x123, f1=0.456000, d2=0.789123, bs=0x7f, l2=0x89abcdef, f2=0.123000
+nestedRun str=com.github.unidbg.android.AndroidTest, l1=0x2468acf13579bde, i=0xf134, d1=0.246900
+testJni bytes=0x120d1000, ap=0x120d1000, bp=0x120d1000, nestedLong=0x48d159e26af37bc
+Start test, stdin=0x1207e424, stdout=0x1207e478, stderr=0x1207e4cc
+st_nlink=0x14, st_blocks=0x40, st_rdev=0x20, st_uid=0x18, st_mtime=0x50, size=104
+dirent size=280
+sizeof ifconf=8, ifreq=32
+ioctl 0  2  lo 2
+test_signal set=02000000
+test_signalaction pid=7
+signo=2, info=0x120d1000, ucontext=0x120d2000
+return data: 0, si_signo=2
+send signal: 2 success!
+signo=35, info=0x120d1000, ucontext=0x120d2000
+return data: 0, si_signo=35
+raise signal: 35 success!
+Oct 22, 2026 11:20:27 AM com.github.unidbg.linux.AndroidSyscallHandler rt_sigtimedwait
+INFO: rt_sigtimedwait set=unidbg@0xe4ff74c0, info=null, timeout=null, sigsetsize=8, sigSet=[14], task=Runnable|Executable entry=0x12001630, sp=0xe4fff608
+test_sigwait set=00200000
+Oct 22, 2026 11:20:27 AM com.github.unidbg.linux.AndroidSyscallHandler statfs64
+INFO: statfs64 buf=unidbg@0xe4ff7568, path=/data/app
+test_statfs size=88, ret=-1, hex=0000000068b5ffe40000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+cpus: 6, pid: 7
+Get CPU affinity success: buf=00000000
+Set CPU affinity success: buf=20000000
+Running processor : 5
+Get CPU affinity success: buf=20000000
+test_float size=4, ip=0x3b1ce80a
+dl_iterate_phdr_callback Name: "libdl.so" (9 segments) => 0x12089321
+     0: [    0x12089034; memsz:    120] flags: 0x4; PT_PHDR
+     1: [    0x12089154; memsz:     13] flags: 0x4; PT_INTERP
+     2: [    0x12089000; memsz:   1dd4] flags: 0x5; PT_LOAD
+     3: [    0x1208bedc; memsz:    128] flags: 0x6; PT_LOAD
+     4: [    0x1208bee0; memsz:     d8] flags: 0x6; PT_DYNAMIC
+     5: [    0x12089168; memsz:     38] flags: 0x4; PT_NOTE
+     6: [    0x12089000; memsz:      0] flags: 0x6; PT_GNU_STACK
+     7: [    0x1208acac; memsz:     f8] flags: 0x4; [other (0x70000001)]
+     8: [    0x1208bedc; memsz:    124] flags: 0x6; PT_GNU_RELRO
+dl_iterate_phdr_callback Name: "libc.so" (10 segments) => 0x1200ab11
+     0: [    0x12005034; memsz:    140] flags: 0x4; PT_PHDR
+     1: [    0x12005174; memsz:     13] flags: 0x4; PT_INTERP
+     2: [    0x12005000; memsz:  72330] flags: 0x5; PT_LOAD
+     3: [    0x12078f60; memsz:   f3c8] flags: 0x6; PT_LOAD
+     4: [    0x1207b2f8; memsz:    108] flags: 0x6; PT_DYNAMIC
+     5: [    0x12005188; memsz:     38] flags: 0x4; PT_NOTE
+     6: [    0x12076bd4; memsz:    75c] flags: 0x4; PT_GNU_EH_FRAME
+     7: [    0x12005000; memsz:      0] flags: 0x6; PT_GNU_STACK
+     8: [    0x12068214; memsz:   2968] flags: 0x4; [other (0x70000001)]
+     9: [    0x12078f60; memsz:   30a0] flags: 0x6; PT_GNU_RELRO
+dl_iterate_phdr_callback Name: "libm.so" (10 segments) => 0x1208ea01
+     0: [    0x1208d034; memsz:    140] flags: 0x4; PT_PHDR
+     1: [    0x1208d174; memsz:     13] flags: 0x4; PT_INTERP
+     2: [    0x1208d000; memsz:  1efac] flags: 0x5; PT_LOAD
+     3: [    0x120adc5c; memsz:    47c] flags: 0x6; PT_LOAD
+     4: [    0x120adc60; memsz:     f8] flags: 0x6; PT_DYNAMIC
+     5: [    0x1208d188; memsz:     38] flags: 0x4; PT_NOTE
+     6: [    0x120abf88; memsz:     24] flags: 0x4; PT_GNU_EH_FRAME
+     7: [    0x1208d000; memsz:      0] flags: 0x6; PT_GNU_STACK
+     8: [    0x120a9204; memsz:    6e0] flags: 0x4; [other (0x70000001)]
+     9: [    0x120adc5c; memsz:    3a4] flags: 0x6; PT_GNU_RELRO
+dl_iterate_phdr_callback Name: "test" (10 segments) => 0xfffe13b0
+     0: [    0x12000034; memsz:    140] flags: 0x4; PT_PHDR
+     1: [    0x12000174; memsz:     13] flags: 0x4; PT_INTERP
+     2: [    0x12000000; memsz:   2760] flags: 0x5; PT_LOAD
+     3: [    0x12003760; memsz:    218] flags: 0x6; PT_LOAD
+     4: [    0x12004978; memsz:      8] flags: 0x6; PT_LOAD
+     5: [    0x1200377c; memsz:     e8] flags: 0x6; PT_DYNAMIC
+     6: [    0x12003760; memsz:    8a0] flags: 0x4; PT_GNU_RELRO
+     7: [    0x12000000; memsz:      0] flags: 0x6; PT_GNU_STACK
+     8: [    0x12000188; memsz:     bc] flags: 0x4; PT_NOTE
+     9: [    0x12000a84; memsz:     80] flags: 0x4; [other (0x70000001)]
+dl_iterate_phdr_callback Name: "libnative.so" (8 segments) => 0x121803f2
+     0: [    0x12180034; memsz:    100] flags: 0x4; PT_PHDR
+     1: [    0x12180000; memsz:    c10] flags: 0x5; PT_LOAD
+     2: [    0x12181c10; memsz:     fc] flags: 0x6; PT_LOAD
+     3: [    0x12181c1c; memsz:     c8] flags: 0x6; PT_DYNAMIC
+     4: [    0x12181c10; memsz:    3f0] flags: 0x4; PT_GNU_RELRO
+     5: [    0x12180000; memsz:      0] flags: 0x6; PT_GNU_STACK
+     6: [    0x12180134; memsz:     bc] flags: 0x4; PT_NOTE
+     7: [    0x12180420; memsz:     58] flags: 0x4; [other (0x70000001)]
+test_dl_iterate_phdr sizeof(dl_phdr_info)=0x28, sizeof(Phdr)=0x20, ret=16
+test_netlink fd=3, sizeof(req)=40, buf=28000000160001020000000000000000000000000000000000000000000000000000000000000000, ret=40
+test_netlink status=76, buf=4c000000140002000000000007000000020880fe01000000080001007f000001080002007f000001070003006c6f0000080008008000000014000600ffffffffffffffff64000000c8000000
+Index Of Iface: 1, name=lo, flags=0x49
+  addr0: 127.0.0.1
+  addr1: 127.0.0.1
+  label: lo
+  valid_lft forever
+  preferred_lft forever
+test_netlink status=-1
+test_pthread first arg=0xe4ff7568, ret=0, thread=0x12280930
+test_pthread start_routine ctx=0xe4ff7568
+test_pthread start_routine arg=0xe4ff7568, ret=0x1200497c
+test_pthread second arg=0xe4ff7568, ret=0, thread=0x12280930
+printSystemProperty key=ro.kernel.qemu, value=0x0
+printSystemProperty key=libc.debug.malloc, value=0x0
+printSystemProperty key=ro.product.first_api_level, value=0x0
+callback name=orange, value=ro.boot.verifiedbootstate, serial=100663296
+printSystemProperty key=ro.boot.vbmeta.digest, value=0x0
+callback name=zygote64_32, value=ro.zygote, serial=184549376
+printSystemProperty key=ro.boot.flash.locked, value=0x0
+callback name=1, value=ro.secure, serial=16777216
+callback name=0, value=ro.debuggable, serial=16777216
+printSystemProperty key=ro.boot.vbmeta.device_state, value=0x0
+callback name=2015-10-01, value=ro.build.version.security_patch, serial=167772160
+printSystemProperty key=service.adb.root, value=0x0
+printSystemProperty key=ro.boot.hardware.revision, value=0x0
+callback name=mtp,adb, value=sys.usb.state, serial=117440514
+printSystemProperty key=ro.board.first_api_level, value=0x0
+printSystemProperty key=ro.vendor.api_level, value=0x0
+printSystemProperty key=init.svc.magisk_service, value=0x0
+printSystemProperty key=persist.magisk.hide, value=0x0
+printSystemProperty key=ro.magisk.disable, value=0x0
+printSystemProperty key=init.svc.magisk_pfs, value=0x0
+printSystemProperty key=magisk.version, value=0x0
+printSystemProperty key=init.svc.magisk_pfsd, value=0x0
+Press any key to exit: cmp=0
+Oct 22, 2026 11:20:27 AM com.github.unidbg.spi.AbstractLoader munmap
+WARNING: munmap prot mismatch: removed.prot=0, remove.prot=3, address=0x120d2000
+Oct 22, 2026 11:20:27 AM com.github.unidbg.spi.AbstractLoader munmap
+WARNING: munmap prot mismatch: removed.prot=0, remove.prot=3, address=0x12183000
+exit with code: 0
+exit code: 0, backend=com.github.unidbg.arm.backend.dynarmic.DynarmicBackend32@2ff4f00f
+EXIT_CODE=0

@@ -1,0 +1,98 @@
+[
+  {
+    "arm64": false,
+    "count": 1,
+    "baseline_ns": 306.122,
+    "candidate_ns": 151.864,
+    "speedup": 2.0157641047252803,
+    "baseline_bytes": 96.0,
+    "candidate_bytes": 48.0,
+    "baseline_rss_kib": 55288,
+    "candidate_rss_kib": 55064,
+    "rss_ratio": 0.9959484879178122
+  },
+  {
+    "arm64": false,
+    "count": 16,
+    "baseline_ns": 1778.332,
+    "candidate_ns": 343.624,
+    "speedup": 5.17522641026238,
+    "baseline_bytes": 746.24,
+    "candidate_bytes": 160.0,
+    "baseline_rss_kib": 58488,
+    "candidate_rss_kib": 55452,
+    "rss_ratio": 0.9480919162905211
+  },
+  {
+    "arm64": false,
+    "count": 1024,
+    "baseline_ns": 82474.842,
+    "candidate_ns": 4639.376,
+    "speedup": 17.77714115001673,
+    "baseline_bytes": 28688.0,
+    "candidate_bytes": 8224.0,
+    "baseline_rss_kib": 78816,
+    "candidate_rss_kib": 78008,
+    "rss_ratio": 0.9897482744620382
+  },
+  {
+    "arm64": false,
+    "count": 16384,
+    "baseline_ns": 1369993.79,
+    "candidate_ns": 39977.188,
+    "speedup": 34.26938858230849,
+    "baseline_bytes": 458768.0,
+    "candidate_bytes": 131344.0,
+    "baseline_rss_kib": 86544,
+    "candidate_rss_kib": 85784,
+    "rss_ratio": 0.9912183398040303
+  },
+  {
+    "arm64": true,
+    "count": 1,
+    "baseline_ns": 346.038,
+    "candidate_ns": 175.566,
+    "speedup": 1.9709852704965654,
+    "baseline_bytes": 96.108,
+    "candidate_bytes": 48.0,
+    "baseline_rss_kib": 53980,
+    "candidate_rss_kib": 53664,
+    "rss_ratio": 0.9941459799925898
+  },
+  {
+    "arm64": true,
+    "count": 16,
+    "baseline_ns": 1682.919,
+    "candidate_ns": 280.779,
+    "speedup": 5.9937495325505115,
+    "baseline_bytes": 621.824,
+    "candidate_bytes": 160.0,
+    "baseline_rss_kib": 57292,
+    "candidate_rss_kib": 54384,
+    "rss_ratio": 0.9492424771346785
+  },
+  {
+    "arm64": true,
+    "count": 1024,
+    "baseline_ns": 83874.131,
+    "candidate_ns": 4344.173,
+    "speedup": 19.307272293253515,
+    "baseline_bytes": 28688.0,
+    "candidate_bytes": 8224.0,
+    "baseline_rss_kib": 77772,
+    "candidate_rss_kib": 77084,
+    "rss_ratio": 0.9911536285552641
+  },
+  {
+    "arm64": true,
+    "count": 16384,
+    "baseline_ns": 1424247.762,
+    "candidate_ns": 38589.635,
+    "speedup": 36.9075209444194,
+    "baseline_bytes": 458768.0,
+    "candidate_bytes": 131344.0,
+    "baseline_rss_kib": 85720,
+    "candidate_rss_kib": 84740,
+    "rss_ratio": 0.9885674288380775
+  }
+]

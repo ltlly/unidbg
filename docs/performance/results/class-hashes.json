@@ -1,0 +1,4 @@
+{
+  "../tools/UnidbgPointer.baseline.class": "c7c4edea57700a663f3c17b8335e414b3816a0fdeee1e2589fa8a602093c4d1f",
+  "unidbg-api/target/classes/com/github/unidbg/pointer/UnidbgPointer.class": "8630b5a9e2a6723c482abd30d35dc73d1ab39d3a9a166e6e3e21f2c12c2e255a"
+}
