@@ -794,7 +794,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
 /* Optional scalar API: use the same uc_mem_read checks, without Java array copies. */
 JNIEXPORT jint JNICALL Java_com_github_unidbg_arm_backend_unicorn_Unicorn_scalar_1memory_1api_1version
   (JNIEnv *env, jclass cls) {
-  return 1;
+  return 2;
 }
 
 JNIEXPORT jlong JNICALL Java_com_github_unidbg_arm_backend_unicorn_Unicorn_mem_1read_1value
@@ -819,4 +819,23 @@ JNIEXPORT jlong JNICALL Java_com_github_unidbg_arm_backend_unicorn_Unicorn_mem_1
     value |= ((uint64_t) bytes[i]) << (i * 8);
   }
   return (jlong) value;
+}
+
+JNIEXPORT void JNICALL Java_com_github_unidbg_arm_backend_unicorn_Unicorn_mem_1write_1value
+  (JNIEnv *env, jclass cls, jlong handle, jlong address, jlong value, jint size) {
+  if (size != 1 && size != 2 && size != 4 && size != 8) {
+    jclass exception = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
+    if (exception != NULL) {
+      (*env)->ThrowNew(env, exception, "Invalid scalar size");
+    }
+    return;
+  }
+  uint8_t bytes[8];
+  uint64_t bits = (uint64_t) value;
+  int i;
+  for (i = 0; i < size; i++) {
+    bytes[i] = (uint8_t) (bits >> (i * 8));
+  }
+  t_unicorn unicorn = (t_unicorn) handle;
+  throwException(env, uc_mem_write(unicorn->uc, (uint64_t) address, bytes, (size_t) size));
 }

@@ -214,14 +214,14 @@ public class Unicorn {
     private static native byte[] mem_read(long handle, long address, long size) throws UnicornException;
 
     private static class ScalarMemorySupport {
-        static final boolean AVAILABLE = detect();
+        static final int VERSION = detect();
 
-        private static boolean detect() {
+        private static int detect() {
             try {
-                return scalar_memory_api_version() >= 1;
+                return scalar_memory_api_version();
             } catch (UnsatisfiedLinkError ignored) {
                 // Existing platform binaries remain usable without this optional API.
-                return false;
+                return 0;
             }
         }
     }
@@ -229,7 +229,7 @@ public class Unicorn {
     private static native int scalar_memory_api_version();
 
     public static boolean hasScalarMemoryAccess() {
-        return ScalarMemorySupport.AVAILABLE;
+        return ScalarMemorySupport.VERSION >= 1;
     }
 
     public long mem_read_value(long address, int size) throws UnicornException {
@@ -249,6 +249,26 @@ public class Unicorn {
 
     private static native long mem_read_value(long handle, long address, int size) throws UnicornException;
 
+    public static boolean hasScalarMemoryWriteAccess() {
+        return ScalarMemorySupport.VERSION >= 2;
+    }
+
+    public void mem_write_value(long address, long value, int size) throws UnicornException {
+        if (size != 1 && size != 2 && size != 4 && size != 8) {
+            throw new IllegalArgumentException("Invalid scalar size: " + size);
+        }
+        if (hasScalarMemoryWriteAccess()) {
+            mem_write_value(nativeHandle, address, value, size);
+            return;
+        }
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++) {
+            bytes[i] = (byte) (value >>> (i * 8));
+        }
+        mem_write(address, bytes);
+    }
+
+    private static native void mem_write_value(long handle, long address, long value, int size) throws UnicornException;
 
     /**
      * Write to memory.

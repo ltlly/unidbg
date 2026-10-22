@@ -87,7 +87,6 @@ public interface Backend {
         return value;
     }
 
-
     /**
      * Writes a byte array into emulated memory.
      *
@@ -96,6 +95,18 @@ public interface Backend {
      * @throws BackendException if the address is unmapped or write fails
      */
     void mem_write(long address, byte[] bytes) throws BackendException;
+
+    /** Writes the low 1, 2, 4 or 8 bytes in little-endian order. */
+    default void mem_write_value(long address, long value, int size) throws BackendException {
+        if (size != 1 && size != 2 && size != 4 && size != 8) {
+            throw new IllegalArgumentException("Invalid scalar size: " + size);
+        }
+        byte[] bytes = new byte[size];
+        for (int i = 0; i < size; i++) {
+            bytes[i] = (byte) (value >>> (i * 8));
+        }
+        mem_write(address, bytes);
+    }
 
     /**
      * Maps a region of emulated memory. The address and size must be page-aligned.

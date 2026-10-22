@@ -78,16 +78,19 @@ UNICORN_HOME=/path/to/unicorn ./build.sh osx_arm64
 
 Build artifacts are placed in `src/main/resources/natives/<platform>/`.
 
-## Scalar memory reads
+## Scalar memory access
 
-The JNI binding provides an optional scalar-memory API for little-endian 1, 2,
-4, and 8 byte reads. It uses the same Unicorn memory access checks as `mem_read`,
-without allocating a Java byte array for each value. `Unicorn.hasScalarMemoryAccess()`
-reports whether the loaded native library provides this API.
+The JNI binding provides optional scalar-memory APIs for little-endian 1, 2,
+4, and 8 byte values. They use the same Unicorn memory access checks as
+`mem_read` and `mem_write`, without allocating a Java byte array for each value.
+`Unicorn.hasScalarMemoryAccess()` reports native scalar-read support (API v1),
+and `Unicorn.hasScalarMemoryWriteAccess()` reports scalar-write support (API v2).
 
-The bundled Linux x86_64 library includes this optimization. Older native
+The bundled Linux x86_64 library includes both optimizations. Older native
 libraries, including other bundled platform libraries until rebuilt, remain
-compatible: the Java binding detects the missing optional API and falls back to
-byte-array reads. Rebuilding a platform with the commands above enables the
-scalar API on that platform. No instruction tracing or memory validation is
-turned off by this optimization.
+compatible: the Java binding detects the optional API version and falls back to
+byte-array access for unsupported operations. Rebuilding a platform with the
+commands above enables both scalar APIs on that platform. No instruction tracing
+or memory validation is turned off by these optimizations. System-write tracing
+and custom `onSystemWrite` observers continue receiving byte-array callbacks;
+only the unobserved default path avoids the notification allocation.

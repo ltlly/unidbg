@@ -364,8 +364,20 @@ public class UnidbgPointer extends Pointer implements PointerArg {
         }
     }
 
-    private ByteBuffer allocateBuffer(int size) {
-        return ByteBuffer.allocate(size).order(ByteOrder.LITTLE_ENDIAN);
+    private void setScalar(long offset, long value, int width) {
+        if (size > 0) {
+            if (offset < 0) {
+                throw new IllegalArgumentException();
+            }
+            if (size - offset < width) {
+                throw new InvalidMemoryAccessException();
+            }
+        }
+        long address = peer + offset;
+        backend.mem_write_value(address, value, width);
+        if (listener != null) {
+            listener.onSystemWriteValue(address, value, width);
+        }
     }
 
     @Override
@@ -377,27 +389,27 @@ public class UnidbgPointer extends Pointer implements PointerArg {
 
     @Override
     public void setByte(long offset, byte value) {
-        write(offset, new byte[] { value }, 0, 1);
+        setScalar(offset, value, 1);
     }
 
     @Override
     public void setShort(long offset, short value) {
-        write(offset, allocateBuffer(2).putShort(value).array(), 0, 2);
+        setScalar(offset, value, 2);
     }
 
     @Override
     public void setChar(long offset, char value) {
-        write(offset, allocateBuffer(2).putChar(value).array(), 0, 2);
+        setScalar(offset, value, 2);
     }
 
     @Override
     public void setInt(long offset, int value) {
-        write(offset, allocateBuffer(4).putInt(value).array(), 0, 4);
+        setScalar(offset, value, 4);
     }
 
     @Override
     public void setLong(long offset, long value) {
-        write(offset, allocateBuffer(8).putLong(value).array(), 0, 8);
+        setScalar(offset, value, 8);
     }
 
     @Override
@@ -407,12 +419,12 @@ public class UnidbgPointer extends Pointer implements PointerArg {
 
     @Override
     public void setFloat(long offset, float value) {
-        write(offset, allocateBuffer(4).putFloat(value).array(), 0, 4);
+        setScalar(offset, Float.floatToRawIntBits(value), 4);
     }
 
     @Override
     public void setDouble(long offset, double value) {
-        write(offset, allocateBuffer(8).putDouble(value).array(), 0, 8);
+        setScalar(offset, Double.doubleToRawLongBits(value), 8);
     }
 
     @Override
