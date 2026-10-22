@@ -106,3 +106,19 @@ path; other platform libraries need rebuilding to enable it.
 
 The native bulk-read entry point rejects lengths outside `0..Integer.MAX_VALUE`
 before allocating a Java array, preventing truncation of the destination size.
+
+## Read-only host/API writes
+
+The `0002` engine patch avoids rebuilding the guest memory topology for host
+writes to already-readonly, ordinary root RAM mappings. It keeps full-range
+validation, FlatView/RAMBlock clipping, and pre/post TLB and jump-cache flushes.
+It does not grant guest write permission or automatically invalidate translated
+blocks. Writable memory, MMIO, snapshot/COW mappings, and initially inconsistent
+pointer-backed readonly state retain the legacy path.
+
+This is a workload-specific optimization, not a general speed multiplier.
+Read-only-write microbenchmarks benefit strongly as mapped-region counts grow;
+complete application timings remain mixed, and individual writable-memory
+microbenchmarks can be slightly slower. The bundled Linux x86_64 library has
+been rebuilt with the patch. Other platforms must rebuild from upstream 2.1.4
+plus the complete `patches/` set; they have not been runtime-validated here.
