@@ -122,3 +122,28 @@ complete application timings remain mixed, and individual writable-memory
 microbenchmarks can be slightly slower. The bundled Linux x86_64 library has
 been rebuilt with the patch. Other platforms must rebuild from upstream 2.1.4
 plus the complete `patches/` set; they have not been runtime-validated here.
+
+## Bounded private RAM backing reuse
+
+The `0003` engine patch reuses up to eight internally owned host RAM allocations
+per emulator. Admission is capped at 64 KiB, charging each payload plus one host
+page for allocator/guard overhead; fixed cache metadata is additional. This is
+not a universal bound on platform-specific virtual-address reservation overhead.
+Only exact-size buffers are reused, with their original alignment restored and
+all payload bytes cleared before reuse. Caller-owned `mem_map_ptr` buffers are
+never admitted. Every retained allocation is released during emulator close,
+including when memory snapshots have held unmapped regions until late teardown.
+
+This does not keep freed guest mappings alive or cache RAMBlock/MemoryRegion
+objects. Normal map/unmap validation, permissions, TB/TLB invalidation, partial
+unmaps and snapshot/COW ownership remain in place. Public host reads/writes and
+guest accesses to an unmapped guest address still fail.
+
+Linux x86_64 paired fresh-process checks found a small-map JNI signing workload
+about 29–35% faster in its operation phase and 12–17% faster end to end, with
+essentially unchanged peak RSS. Larger-map and security-library workloads did
+not show a reliable general gain. Initial slower cold-start/security samples
+were retained in the analysis; repeat checks were near neutral. This is not an
+overall 20x claim. ARM32/ARM64 mapping, zeroing, executable remapping, pointer
+ownership, MMIO, memory snapshots, virtual TLB and close/leak checks passed.
+Other platform binaries have not been rebuilt or runtime-validated here.
