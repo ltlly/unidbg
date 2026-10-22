@@ -125,25 +125,37 @@ plus the complete `patches/` set; they have not been runtime-validated here.
 
 ## Bounded private RAM backing reuse
 
-The `0003` engine patch reuses up to eight internally owned host RAM allocations
-per emulator. Admission is capped at 64 KiB, charging each payload plus one host
-page for allocator/guard overhead; fixed cache metadata is additional. This is
-not a universal bound on platform-specific virtual-address reservation overhead.
-Only exact-size buffers are reused, with their original alignment restored and
-all payload bytes cleared before reuse. Caller-owned `mem_map_ptr` buffers are
-never admitted. Every retained allocation is released during emulator close,
-including when memory snapshots have held unmapped regions until late teardown.
+The `0003` engine patch reuses up to 128 internally owned host RAM allocations
+per emulator. Total admission is capped at 1 MiB, charging each payload plus one
+host page for allocator/guard overhead. Non-host-page-sized allocations retain a
+separate 64 KiB admission limit; individual payloads cannot exceed 64 KiB. Fixed
+cache metadata is additional. These limits are not a universal bound on
+platform-specific virtual-address reservation overhead.
+
+The occupied entries form a dense prefix. Removal swaps the final entry into
+the vacated slot, so a burst of same-sized pages can reuse its first matching
+entry without scanning empty slots. Only exact-size buffers are reused, with
+their original alignment restored and all payload bytes cleared before reuse.
+Caller-owned `mem_map_ptr` buffers are never admitted. Every retained allocation
+is released during emulator close, including when memory snapshots have held
+unmapped regions until late teardown.
 
 This does not keep freed guest mappings alive or cache RAMBlock/MemoryRegion
 objects. Normal map/unmap validation, permissions, TB/TLB invalidation, partial
 unmaps and snapshot/COW ownership remain in place. Public host reads/writes and
 guest accesses to an unmapped guest address still fail.
 
-Linux x86_64 paired fresh-process checks found a small-map JNI signing workload
-about 29–35% faster in its operation phase and 12–17% faster end to end, with
-essentially unchanged peak RSS. Larger-map and security-library workloads did
-not show a reliable general gain. Initial slower cold-start/security samples
-were retained in the analysis; repeat checks were near neutral. This is not an
-overall 20x claim. ARM32/ARM64 mapping, zeroing, executable remapping, pointer
-ownership, MMIO, memory snapshots, virtual TLB and close/leak checks passed.
-Other platform binaries have not been rebuilt or runtime-validated here.
+Linux x86_64 paired fresh-process checks of this larger page pool versus the
+previous eight-entry implementation found a 100-entry Map-to-JNI signing workload
+about 24% faster in its operation phase and 23% faster end to end. A small-map
+workload improved about 4%; peak RSS was essentially unchanged for both. Long
+security-library encryption/decryption checks were near neutral to slightly
+faster, with peak RSS changes around 1%. Fifteen paired cold-start repetitions
+per workload were near neutral. Early sparse-cache experiments with slower
+security-library samples were rejected rather than shipped.
+
+This is not an overall 20x claim. ARM32/ARM64 dense ownership/accounting, zeroing,
+mixed-size reuse, permissions, unmapped accesses, executable remapping,
+caller-owned buffers, partial unmaps, memory snapshots and close/leak checks
+passed, along with the Java regression checks. Other platform binaries have not
+been rebuilt or runtime-validated here.
