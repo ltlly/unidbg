@@ -386,8 +386,27 @@ JNIEXPORT void JNICALL Java_com_github_unidbg_arm_backend_unicorn_Unicorn_mem_1w
   (JNIEnv *env, jclass cls, jlong handle, jlong address, jbyteArray bytes) {
   t_unicorn unicorn = (t_unicorn) handle;
   uc_engine *eng = unicorn->uc;
-  jbyte *array = (*env)->GetByteArrayElements(env, bytes, NULL);
+  if (bytes == NULL) {
+    jclass exception = (*env)->FindClass(env, "java/lang/NullPointerException");
+    if (exception != NULL) {
+      (*env)->ThrowNew(env, exception, "bytes");
+    }
+    return;
+  }
   jsize size = (*env)->GetArrayLength(env, bytes);
+  if (size > 0 && size <= 4096) {
+    jbyte buffer[4096];
+    (*env)->GetByteArrayRegion(env, bytes, 0, size, buffer);
+    if ((*env)->ExceptionCheck(env)) {
+      return;
+    }
+    throwException(env, uc_mem_write(eng, (uint64_t)address, buffer, (size_t)size));
+    return;
+  }
+  jbyte *array = (*env)->GetByteArrayElements(env, bytes, NULL);
+  if (array == NULL) {
+    return;
+  }
   uc_err err = uc_mem_write(eng, (uint64_t)address, array, (size_t)size);
   if (err != UC_ERR_OK) {
     throwException(env, err);
@@ -404,8 +423,33 @@ JNIEXPORT jbyteArray JNICALL Java_com_github_unidbg_arm_backend_unicorn_Unicorn_
   (JNIEnv *env, jclass cls, jlong handle, jlong address, jlong size) {
   t_unicorn unicorn = (t_unicorn) handle;
   uc_engine *eng = unicorn->uc;
+  // JNI arrays use jsize. Never truncate the allocation while passing a larger
+  // length to Unicorn, which would otherwise overrun the destination buffer.
+  if (size < 0 || size > INT32_MAX) {
+    jclass exception = (*env)->FindClass(env, "java/lang/IllegalArgumentException");
+    if (exception != NULL) {
+      (*env)->ThrowNew(env, exception, "Memory read size is outside Java array range");
+    }
+    return NULL;
+  }
   jbyteArray bytes = (*env)->NewByteArray(env, (jsize)size);
+  if (bytes == NULL) {
+    return NULL;
+  }
+  if (size > 0 && size <= 4096) {
+    jbyte buffer[4096];
+    uc_err err = uc_mem_read(eng, (uint64_t)address, buffer, (size_t)size);
+    if (err != UC_ERR_OK) {
+      throwException(env, err);
+      return NULL;
+    }
+    (*env)->SetByteArrayRegion(env, bytes, 0, (jsize)size, buffer);
+    return bytes;
+  }
   jbyte *array = (*env)->GetByteArrayElements(env, bytes, NULL);
+  if (array == NULL) {
+    return NULL;
+  }
   uc_err err = uc_mem_read(eng, (uint64_t)address, array, (size_t)size);
   if (err != UC_ERR_OK) {
     throwException(env, err);

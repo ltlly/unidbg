@@ -94,3 +94,15 @@ commands above enables both scalar APIs on that platform. No instruction tracing
 or memory validation is turned off by these optimizations. System-write tracing
 and custom `onSystemWrite` observers continue receiving byte-array callbacks;
 only the unobserved default path avoids the notification allocation.
+
+## Bounded bulk JNI transfers
+
+Bulk reads and writes of 1 through 4096 bytes use a per-call native stack
+buffer with JNI array-region transfers instead of an acquired array-elements
+buffer. Larger transfers retain the existing path. This avoids holding a pinned
+Java array across Unicorn operations and keeps the same guest-memory checks,
+callbacks and cache behavior. The rebuilt Linux x86_64 library includes this
+path; other platform libraries need rebuilding to enable it.
+
+The native bulk-read entry point rejects lengths outside `0..Integer.MAX_VALUE`
+before allocating a Java array, preventing truncation of the destination size.
