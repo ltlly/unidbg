@@ -159,3 +159,34 @@ mixed-size reuse, permissions, unmapped accesses, executable remapping,
 caller-owned buffers, partial unmaps, memory snapshots and close/leak checks
 passed, along with the Java regression checks. Other platform binaries have not
 been rebuilt or runtime-validated here.
+
+## Stable guest-store mapping reuse
+
+The `0004` engine patch avoids a second MemoryRegion lookup within the same
+ordinary guest store. It reuses the first result only while the access remains
+stable: snapshots and registered write hooks disable reuse, and unmapped,
+protected, copy-on-write and watchpoint paths invalidate that decision before
+performing callbacks or recovery. MMIO and discarded writes retain their existing
+paths. Atomic/probe callers still perform the original lookup.
+
+This is a per-access local value, not a persistent mapping cache. No SDK names,
+input values or expected outputs select the optimization. Guest permissions,
+NOTDIRTY decisions, translated-code invalidation, hooks and snapshot semantics
+are unchanged; no new heap allocation or retained-memory pool is introduced.
+
+Seven alternating fresh-JVM pairs per workload on Linux x86_64 found the
+security-library and Telegram workloads approximately 9-15% faster in the
+operation phase, using the geometric mean of paired speed ratios. Small-map
+and JNA workloads were near neutral. Paired peak-RSS geometric means changed by
+less than approximately 1% in either direction. These measurements are not a
+universal speed multiplier or an overall 20x claim.
+Fifteen paired new-JVM starts per workload were near neutral end to end;
+individual short startup/load subphases remained noisy. OS caches were not cleared.
+
+ARM32/ARM64 upstream unit tests and Java regressions passed, with additional
+private differential checks for scalar/unaligned/cross-page writes, permissions,
+snapshot/COW, self-modifying guest code, MMIO and callback behavior. Remapping the
+currently written page inside its own write callback remains an observed baseline
+failure; this patch neither enables the fast path there nor repairs that case.
+Only the Linux x86_64 binary was rebuilt and runtime-validated here. Other hosts
+must rebuild from the complete patch set before using this optimization.
