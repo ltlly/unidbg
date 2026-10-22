@@ -190,3 +190,41 @@ currently written page inside its own write callback remains an observed baselin
 failure; this patch neither enables the fast path there nor repairs that case.
 Only the Linux x86_64 binary was rebuilt and runtime-validated here. Other hosts
 must rebuild from the complete patch set before using this optimization.
+
+## Terminal page-dispatch compaction
+
+The `0005` engine patch tracks the remaining radix depth during dispatch-tree
+compaction, including already-compressed edges. A terminal node contains only
+leaf section entries; unassigned holes are leaf entries too. Its full scan
+cannot recurse or find a single child to collapse, so that scan is skipped.
+Nonterminal compaction and every mapping/invalidation operation remain unchanged.
+This is a general tree invariant, not an SDK, input or expected-result shortcut.
+No persistent field, mapping cache or heap allocation is added.
+
+Seven alternating fresh-JVM pairs per workload on Linux x86_64 found the two
+Map-to-JNI signing workloads approximately 1.13x and 1.15x faster in their
+operation phase, with every pair improving. This corresponds to approximately
+12% and 13% less operation time, not an overall application speed multiplier.
+Other workloads did not show a reliable benefit. An initial approximately 2.6%
+Telegram64 throughput decrease was not reproduced in ten additional pairs.
+Keeping all original and additional measurements, TT and Telegram64 were near
+neutral, while JNA64 remained approximately 2.4% lower in throughput. Its wide
+exploratory interval includes both neutrality and a small regression; this is
+not proof that all workloads are unaffected. Follow-up workloads were selected
+after inspecting the first results, and no original measurements were discarded.
+
+Paired peak-RSS geometric means were approximately unchanged, within about 1%
+after combining those follow-ups; TT peak RSS remained noisy and does not
+establish a tight memory bound. Java allocation totals were essentially
+unchanged. Fifteen paired fresh-JVM starts per workload did not establish a
+broad cold-start benefit. OS caches were not cleared. These are incremental,
+workload-dependent results, not the requested overall 20x improvement.
+
+Private validation included byte-identical old/new trees across randomized and
+boundary mappings, repeated compaction, address/undefined-behavior sanitizers,
+ARM32/ARM64 upstream unit tests, guest-store and callback checks, mapping
+ownership/permissions, 200 memory-snapshot restore/close cycles, and Java
+regressions. Leak detection was unavailable in the sanitizer environment; no
+leak-freedom claim is made. The known baseline remap-inside-write-callback
+failure remains outside this optimization. Only the Linux x86_64 binary was
+rebuilt and runtime-validated; other hosts require a rebuild and validation.
