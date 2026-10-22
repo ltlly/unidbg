@@ -334,34 +334,44 @@ public class UnidbgPointer extends Pointer implements PointerArg {
     @Override
     public String getString(long offset, String encoding) {
         long addr = peer + offset;
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream(0x40);
-        while (true) {
-            byte[] data = backend.mem_read(addr, 0x10);
-            int length = Utils.indexOfNullTerminator(data);
-            baos.write(data, 0, length);
-            addr += length;
-
-            if (length < data.length) { // reach zero
-                break;
-            }
-
-            if (baos.size() > 0x40000) { // 256k
-                throw new IllegalStateException("buffer overflow");
-            }
-
-            if (size > 0 && offset + baos.size() > size) {
-                throw new InvalidMemoryAccessException();
-            }
-        }
-
+        byte[] data = backend.mem_read(addr, 0x10);
+        int length = Utils.indexOfNullTerminator(data);
         try {
-            String ret = baos.toString(encoding);
-            log.debug("getString pointer={}, size={}, encoding={}, ret={}", this, baos.size(), encoding, ret);
-            return ret;
+            if (length < data.length) {
+                return stringResult(new String(data, 0, length, encoding), length, encoding);
+            }
+            return readLongString(offset, addr, data, encoding);
         } catch (UnsupportedEncodingException e) {
             throw new IllegalStateException(e);
         }
+    }
+
+    private String readLongString(long offset, long addr, byte[] data, String encoding)
+            throws UnsupportedEncodingException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream(0x40);
+        while (true) {
+            int length = Utils.indexOfNullTerminator(data);
+            baos.write(data, 0, length);
+            addr += length;
+            if (length < data.length) { // reach zero
+                break;
+            }
+            if (baos.size() > 0x40000) { // 256k
+                throw new IllegalStateException("buffer overflow");
+            }
+            if (size > 0 && offset + baos.size() > size) {
+                throw new InvalidMemoryAccessException();
+            }
+            data = backend.mem_read(addr, 0x10);
+        }
+        return stringResult(baos.toString(encoding), baos.size(), encoding);
+    }
+
+    private String stringResult(String value, int length, String encoding) {
+        if (log.isDebugEnabled()) {
+            log.debug("getString pointer={}, size={}, encoding={}, ret={}", this, length, encoding, value);
+        }
+        return value;
     }
 
     private void setScalar(long offset, long value, int width) {
