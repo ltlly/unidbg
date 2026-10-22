@@ -1,0 +1,240 @@
+SAMPLE phase=baseline arm64=false workload=jni 1024 500 run=1
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=10114 ns_per_op=90898.060 bytes_per_op=30529.808 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2895100179998735, "child_user_seconds": 2.119922, "child_system_seconds": 0.089699, "peak_rss_kib": 115616, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 1024 500 run=1
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=146360 ns_per_op=5677.456 bytes_per_op=10016.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2667864140003076, "child_user_seconds": 2.01988, "child_system_seconds": 0.129182, "peak_rss_kib": 157048, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 1024 500 run=2
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=147193 ns_per_op=6535.434 bytes_per_op=9952.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2403377949999594, "child_user_seconds": 1.8860679999999999, "child_system_seconds": 0.101113, "peak_rss_kib": 156392, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 1024 500 run=2
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=10354 ns_per_op=93994.600 bytes_per_op=30480.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3019504369999595, "child_user_seconds": 2.040029, "child_system_seconds": 0.10171899999999999, "peak_rss_kib": 116452, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 1024 500 run=3
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=10320 ns_per_op=87854.704 bytes_per_op=30536.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3093444219998673, "child_user_seconds": 2.138287, "child_system_seconds": 0.073243, "peak_rss_kib": 116404, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 1024 500 run=3
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=143625 ns_per_op=5424.716 bytes_per_op=10016.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.254523860000063, "child_user_seconds": 2.026825, "child_system_seconds": 0.113545, "peak_rss_kib": 153760, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 1024 500 run=4
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=140589 ns_per_op=5859.772 bytes_per_op=10016.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2593721980001646, "child_user_seconds": 2.0733449999999998, "child_system_seconds": 0.10846499999999999, "peak_rss_kib": 161448, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 1024 500 run=4
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=10122 ns_per_op=90314.300 bytes_per_op=30525.360 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3088871660002042, "child_user_seconds": 2.126979, "child_system_seconds": 0.071406, "peak_rss_kib": 116780, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 1024 500 run=5
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=9164 ns_per_op=97883.568 bytes_per_op=30416.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3194406420002451, "child_user_seconds": 1.8688069999999999, "child_system_seconds": 0.142811, "peak_rss_kib": 112132, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 1024 500 run=5
+RESULT mode=jni arm64=false count=1024 iterations=500 warmups=130076 ns_per_op=6142.942 bytes_per_op=10016.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2596430870003132, "child_user_seconds": 2.052225, "child_system_seconds": 0.11568099999999999, "peak_rss_kib": 161712, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 16384 500 run=1
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=667 ns_per_op=1456005.210 bytes_per_op=460920.672 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.9824333920000754, "child_user_seconds": 2.272316, "child_system_seconds": 0.088144, "peak_rss_kib": 106812, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 16384 500 run=1
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=16941 ns_per_op=48085.130 bytes_per_op=133120.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.3048591079996186, "child_user_seconds": 2.2169309999999998, "child_system_seconds": 0.127718, "peak_rss_kib": 117272, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 16384 500 run=2
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=18486 ns_per_op=43720.374 bytes_per_op=133088.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.3067148360000829, "child_user_seconds": 1.975582, "child_system_seconds": 0.111192, "peak_rss_kib": 115672, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 16384 500 run=2
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=677 ns_per_op=1491619.754 bytes_per_op=460920.944 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 2.015807628999937, "child_user_seconds": 2.300286, "child_system_seconds": 0.110664, "peak_rss_kib": 106588, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 16384 500 run=3
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=678 ns_per_op=1394908.016 bytes_per_op=460920.672 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.9848188999999365, "child_user_seconds": 2.248448, "child_system_seconds": 0.117007, "peak_rss_kib": 106656, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 16384 500 run=3
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=15780 ns_per_op=53776.716 bytes_per_op=133136.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.3417573289998472, "child_user_seconds": 2.45241, "child_system_seconds": 0.115926, "peak_rss_kib": 123276, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 16384 500 run=4
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=16183 ns_per_op=57421.526 bytes_per_op=133136.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.308552354999847, "child_user_seconds": 2.350287, "child_system_seconds": 0.10604999999999999, "peak_rss_kib": 118884, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 16384 500 run=4
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=630 ns_per_op=1482353.822 bytes_per_op=460919.424 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 2.066858431000128, "child_user_seconds": 2.432399, "child_system_seconds": 0.10896199999999999, "peak_rss_kib": 107844, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 16384 500 run=5
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=640 ns_per_op=1448578.858 bytes_per_op=460920.944 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 2.0230497570000807, "child_user_seconds": 2.345313, "child_system_seconds": 0.10332999999999999, "peak_rss_kib": 107516, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 16384 500 run=5
+RESULT mode=jni arm64=false count=16384 iterations=500 warmups=17420 ns_per_op=52254.362 bytes_per_op=133136.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.316141663000053, "child_user_seconds": 2.207449, "child_system_seconds": 0.18751199999999998, "peak_rss_kib": 119512, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 65536 200 run=1
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=166 ns_per_op=5686368.365 bytes_per_op=1837109.160 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.416179985999861, "child_user_seconds": 2.667606, "child_system_seconds": 0.09543499999999999, "peak_rss_kib": 93536, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 65536 200 run=1
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=4908 ns_per_op=207390.735 bytes_per_op=527312.000 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3197367570001006, "child_user_seconds": 1.8772199999999999, "child_system_seconds": 0.089637, "peak_rss_kib": 110556, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 65536 200 run=2
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=4995 ns_per_op=188120.040 bytes_per_op=527312.000 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.322975451000275, "child_user_seconds": 1.820555, "child_system_seconds": 0.11066999999999999, "peak_rss_kib": 109956, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 65536 200 run=2
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=173 ns_per_op=5942801.790 bytes_per_op=1837109.160 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.4537513589998525, "child_user_seconds": 2.705119, "child_system_seconds": 0.111215, "peak_rss_kib": 93120, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 65536 200 run=3
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=176 ns_per_op=5975687.910 bytes_per_op=1837109.160 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.484765982999761, "child_user_seconds": 2.742133, "child_system_seconds": 0.10205399999999999, "peak_rss_kib": 94780, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 65536 200 run=3
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=5100 ns_per_op=181193.575 bytes_per_op=527312.000 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3154705910001212, "child_user_seconds": 1.886112, "child_system_seconds": 0.10670299999999999, "peak_rss_kib": 110372, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 65536 200 run=4
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=4670 ns_per_op=176203.760 bytes_per_op=527312.000 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3369393069997386, "child_user_seconds": 1.8742489999999998, "child_system_seconds": 0.111605, "peak_rss_kib": 110036, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 65536 200 run=4
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=166 ns_per_op=5745274.135 bytes_per_op=1837109.160 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.436097291999886, "child_user_seconds": 2.7195039999999997, "child_system_seconds": 0.09451999999999999, "peak_rss_kib": 94248, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=jni 65536 200 run=5
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=173 ns_per_op=6031954.560 bytes_per_op=1837109.160 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.502215944999989, "child_user_seconds": 2.776785, "child_system_seconds": 0.104395, "peak_rss_kib": 93776, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=jni 65536 200 run=5
+RESULT mode=jni arm64=false count=65536 iterations=200 warmups=5166 ns_per_op=196307.460 bytes_per_op=527313.800 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3057807120003417, "child_user_seconds": 1.8118210000000001, "child_system_seconds": 0.147314, "peak_rss_kib": 111336, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=compute 10000 500 run=1
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=41667 ns_per_op=22416.310 bytes_per_op=680.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2538226700003179, "child_user_seconds": 1.542741, "child_system_seconds": 0.05823, "peak_rss_kib": 95196, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=compute 10000 500 run=1
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=47624 ns_per_op=18905.052 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2398027869999169, "child_user_seconds": 1.50331, "child_system_seconds": 0.070065, "peak_rss_kib": 99452, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=compute 10000 500 run=2
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=46835 ns_per_op=20272.218 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2455242769997312, "child_user_seconds": 1.510006, "child_system_seconds": 0.06903999999999999, "peak_rss_kib": 99564, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=compute 10000 500 run=2
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=44441 ns_per_op=21496.548 bytes_per_op=680.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2301489440001205, "child_user_seconds": 1.466686, "child_system_seconds": 0.07378, "peak_rss_kib": 94568, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=compute 10000 500 run=3
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=43183 ns_per_op=20537.118 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2432763949996115, "child_user_seconds": 1.5344609999999999, "child_system_seconds": 0.06330899999999999, "peak_rss_kib": 95268, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=compute 10000 500 run=3
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=47298 ns_per_op=18630.918 bytes_per_op=680.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2698023090001698, "child_user_seconds": 1.560446, "child_system_seconds": 0.052383, "peak_rss_kib": 99740, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=compute 10000 500 run=4
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=34314 ns_per_op=37758.146 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.223307018000014, "child_user_seconds": 1.466086, "child_system_seconds": 0.08, "peak_rss_kib": 93224, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=compute 10000 500 run=4
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=47293 ns_per_op=19163.768 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2236953569999969, "child_user_seconds": 1.4717989999999999, "child_system_seconds": 0.081325, "peak_rss_kib": 99364, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=false workload=compute 10000 500 run=5
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=44396 ns_per_op=22287.174 bytes_per_op=680.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2213420859998223, "child_user_seconds": 1.473093, "child_system_seconds": 0.058700999999999996, "peak_rss_kib": 94508, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=false workload=compute 10000 500 run=5
+RESULT mode=compute arm64=false count=10000 iterations=500 warmups=47890 ns_per_op=19563.492 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2361830799995914, "child_user_seconds": 1.47732, "child_system_seconds": 0.076585, "peak_rss_kib": 96572, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 1024 500 run=1
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=10425 ns_per_op=93884.124 bytes_per_op=30000.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3242471879998448, "child_user_seconds": 1.8966949999999998, "child_system_seconds": 0.088805, "peak_rss_kib": 102312, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 1024 500 run=1
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=216888 ns_per_op=3762.446 bytes_per_op=9536.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.265328569000303, "child_user_seconds": 1.833441, "child_system_seconds": 0.101175, "peak_rss_kib": 107144, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 1024 500 run=2
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=210177 ns_per_op=3944.182 bytes_per_op=9536.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2545850020001126, "child_user_seconds": 1.8695789999999999, "child_system_seconds": 0.087258, "peak_rss_kib": 106624, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 1024 500 run=2
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=8442 ns_per_op=107140.248 bytes_per_op=30000.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.327939138000147, "child_user_seconds": 1.88762, "child_system_seconds": 0.072175, "peak_rss_kib": 102860, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 1024 500 run=3
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=9624 ns_per_op=135496.930 bytes_per_op=30000.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3443676370002322, "child_user_seconds": 1.8754469999999999, "child_system_seconds": 0.074225, "peak_rss_kib": 103260, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 1024 500 run=3
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=189237 ns_per_op=4761.520 bytes_per_op=9536.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2632001770002717, "child_user_seconds": 1.917978, "child_system_seconds": 0.127829, "peak_rss_kib": 104072, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 1024 500 run=4
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=208305 ns_per_op=8123.442 bytes_per_op=9536.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2689925330000733, "child_user_seconds": 1.889899, "child_system_seconds": 0.095675, "peak_rss_kib": 104620, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 1024 500 run=4
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=10115 ns_per_op=105291.800 bytes_per_op=30000.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3240935020003235, "child_user_seconds": 1.829205, "child_system_seconds": 0.111855, "peak_rss_kib": 102896, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 1024 500 run=5
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=10051 ns_per_op=85950.134 bytes_per_op=30000.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.3726535689997945, "child_user_seconds": 1.952408, "child_system_seconds": 0.093237, "peak_rss_kib": 102972, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 1024 500 run=5
+RESULT mode=jni arm64=true count=1024 iterations=500 warmups=201197 ns_per_op=3694.906 bytes_per_op=9536.000 checksum=-2703979008
+{"exit_code": 0, "wall_seconds": 1.2729035429997566, "child_user_seconds": 1.9201549999999998, "child_system_seconds": 0.102633, "peak_rss_kib": 107868, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 16384 500 run=1
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=614 ns_per_op=1442136.324 bytes_per_op=460246.176 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 2.0042128280001634, "child_user_seconds": 2.321685, "child_system_seconds": 0.080985, "peak_rss_kib": 99900, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 16384 500 run=1
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=17924 ns_per_op=40907.698 bytes_per_op=132656.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.296915128999899, "child_user_seconds": 1.9550589999999999, "child_system_seconds": 0.109764, "peak_rss_kib": 103816, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 16384 500 run=2
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=19783 ns_per_op=49610.962 bytes_per_op=132656.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.3001022759999614, "child_user_seconds": 2.003526, "child_system_seconds": 0.11953599999999999, "peak_rss_kib": 104132, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 16384 500 run=2
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=641 ns_per_op=1536537.694 bytes_per_op=460248.672 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 2.0482444740000574, "child_user_seconds": 2.380869, "child_system_seconds": 0.098407, "peak_rss_kib": 99836, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 16384 500 run=3
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=602 ns_per_op=1450592.174 bytes_per_op=460245.024 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.985672212999816, "child_user_seconds": 2.295559, "child_system_seconds": 0.072549, "peak_rss_kib": 99348, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 16384 500 run=3
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=19080 ns_per_op=50409.900 bytes_per_op=132656.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.3294228679997104, "child_user_seconds": 1.993678, "child_system_seconds": 0.14216099999999998, "peak_rss_kib": 104428, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 16384 500 run=4
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=20510 ns_per_op=47717.308 bytes_per_op=132656.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.3145007929997519, "child_user_seconds": 1.924691, "child_system_seconds": 0.12783899999999998, "peak_rss_kib": 104296, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 16384 500 run=4
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=639 ns_per_op=1447080.366 bytes_per_op=460248.576 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 2.016847231000156, "child_user_seconds": 2.343541, "child_system_seconds": 0.082078, "peak_rss_kib": 100572, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 16384 500 run=5
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=639 ns_per_op=1445369.700 bytes_per_op=460248.576 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.9946436279997215, "child_user_seconds": 2.312177, "child_system_seconds": 0.099289, "peak_rss_kib": 99952, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 16384 500 run=5
+RESULT mode=jni arm64=true count=16384 iterations=500 warmups=18146 ns_per_op=52934.666 bytes_per_op=132656.000 checksum=-657924096
+{"exit_code": 0, "wall_seconds": 1.3081827109999722, "child_user_seconds": 2.127573, "child_system_seconds": 0.122748, "peak_rss_kib": 103984, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 65536 200 run=1
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=177 ns_per_op=6018458.185 bytes_per_op=1836480.360 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.49618669199981, "child_user_seconds": 2.701066, "child_system_seconds": 0.128943, "peak_rss_kib": 93632, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 65536 200 run=1
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=5270 ns_per_op=199877.115 bytes_per_op=526737.800 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3403317620000053, "child_user_seconds": 1.847096, "child_system_seconds": 0.105901, "peak_rss_kib": 102184, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 65536 200 run=2
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=5024 ns_per_op=184076.890 bytes_per_op=526736.000 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3226810659998591, "child_user_seconds": 1.80994, "child_system_seconds": 0.12900999999999999, "peak_rss_kib": 101296, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 65536 200 run=2
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=177 ns_per_op=5516726.180 bytes_per_op=1836480.360 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.3721104690002903, "child_user_seconds": 2.672813, "child_system_seconds": 0.047672, "peak_rss_kib": 94080, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 65536 200 run=3
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=172 ns_per_op=5715999.800 bytes_per_op=1836480.360 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.4103112739999233, "child_user_seconds": 2.642109, "child_system_seconds": 0.085704, "peak_rss_kib": 93260, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 65536 200 run=3
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=5096 ns_per_op=309460.505 bytes_per_op=526736.000 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3399599039998975, "child_user_seconds": 1.768694, "child_system_seconds": 0.105722, "peak_rss_kib": 100968, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 65536 200 run=4
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=5320 ns_per_op=180505.695 bytes_per_op=526756.240 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3025027250000676, "child_user_seconds": 1.7541120000000001, "child_system_seconds": 0.12283899999999999, "peak_rss_kib": 102080, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 65536 200 run=4
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=172 ns_per_op=5624390.835 bytes_per_op=1836480.360 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.386089324000295, "child_user_seconds": 2.6198699999999997, "child_system_seconds": 0.10421899999999999, "peak_rss_kib": 93728, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=jni 65536 200 run=5
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=166 ns_per_op=5622800.180 bytes_per_op=1836456.000 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 2.391708324999854, "child_user_seconds": 2.636401, "child_system_seconds": 0.09562899999999999, "peak_rss_kib": 94644, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=jni 65536 200 run=5
+RESULT mode=jni arm64=true count=65536 iterations=200 warmups=5471 ns_per_op=169866.580 bytes_per_op=526720.760 checksum=-1021083648
+{"exit_code": 0, "wall_seconds": 1.3108038740001575, "child_user_seconds": 1.763458, "child_system_seconds": 0.130767, "peak_rss_kib": 103012, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=compute 10000 500 run=1
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=46614 ns_per_op=20888.022 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2358444199999212, "child_user_seconds": 1.477418, "child_system_seconds": 0.072934, "peak_rss_kib": 84376, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=compute 10000 500 run=1
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=47952 ns_per_op=20186.102 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2345835900005113, "child_user_seconds": 1.487707, "child_system_seconds": 0.053175, "peak_rss_kib": 83876, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=compute 10000 500 run=2
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=45706 ns_per_op=19959.100 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2044909270007338, "child_user_seconds": 1.416352, "child_system_seconds": 0.068616, "peak_rss_kib": 83248, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=compute 10000 500 run=2
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=45728 ns_per_op=23438.698 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2160434460001852, "child_user_seconds": 1.418172, "child_system_seconds": 0.080425, "peak_rss_kib": 84212, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=compute 10000 500 run=3
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=46882 ns_per_op=19748.460 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2037787170002048, "child_user_seconds": 1.451028, "child_system_seconds": 0.047664, "peak_rss_kib": 83964, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=compute 10000 500 run=3
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=45151 ns_per_op=19813.158 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2021370249995016, "child_user_seconds": 1.450424, "child_system_seconds": 0.052627, "peak_rss_kib": 84612, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=compute 10000 500 run=4
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=41789 ns_per_op=20244.790 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.22756832199957, "child_user_seconds": 1.495916, "child_system_seconds": 0.069185, "peak_rss_kib": 85256, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=compute 10000 500 run=4
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=42184 ns_per_op=20315.418 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.229680849000033, "child_user_seconds": 1.482402, "child_system_seconds": 0.076527, "peak_rss_kib": 83748, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=baseline arm64=true workload=compute 10000 500 run=5
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=43157 ns_per_op=20742.904 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.2335660999997344, "child_user_seconds": 1.5050620000000001, "child_system_seconds": 0.066791, "peak_rss_kib": 83868, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}
+SAMPLE phase=candidate arm64=true workload=compute 10000 500 run=5
+RESULT mode=compute arm64=true count=10000 iterations=500 warmups=38735 ns_per_op=22106.684 bytes_per_op=696.000 checksum=0
+{"exit_code": 0, "wall_seconds": 1.252788505999888, "child_user_seconds": 1.490872, "child_system_seconds": 0.089226, "peak_rss_kib": 83796, "host": "Linux-6.18.55-x86_64-with-glibc2.41", "note": "RSS includes JVM/emulator startup; allocation is reported separately."}

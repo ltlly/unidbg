@@ -15,7 +15,7 @@ import time
 
 command = [os.environ.get('JAVA', 'java'), '-Xms128m', '-Xmx128m',
            '-cp', os.environ['UNIDBG_CLASSPATH'],
-           'com.github.unidbg.performance.IntArrayBenchmark'] + sys.argv[1:]
+           os.environ.get('UNIDBG_BENCHMARK_MAIN', 'com.github.unidbg.performance.IntArrayBenchmark')] + sys.argv[1:]
 start = time.monotonic()
 result = subprocess.run(command, check=False)
 usage = resource.getrusage(resource.RUSAGE_CHILDREN)
