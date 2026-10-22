@@ -228,3 +228,47 @@ regressions. Leak detection was unavailable in the sanitizer environment; no
 leak-freedom claim is made. The known baseline remap-inside-write-callback
 failure remains outside this optimization. Only the Linux x86_64 binary was
 rebuilt and runtime-validated; other hosts require a rebuild and validation.
+
+## Validated first-store section reuse
+
+The `0006` engine patch records an existing dispatch-section index alongside a
+TLB entry, only for ordinary RAM sections covering the complete physical page
+in the same address-space dispatch. A guest store can use that index instead of
+its first mapping query only while the original write TLB tag is valid and
+matching, with no snapshot or registered write hook. The index has no independent
+lifetime: normal invalidation, refill and whole-entry victim swaps remain in
+force. Invalid or ineligible entries retain the original query. Callback and
+recovery paths, permissions, NOTDIRTY/SMC, MMIO and COW behavior are unchanged.
+This is a general mapping invariant, with no SDK names or expected-result cache.
+
+The field uses existing alignment padding in the tested Linux x86_64 builds:
+`CPUIOTLBEntry` remains 16 bytes for both ARM32 and ARM64 guests. No additional
+heap allocation or retained MemoryRegion object is introduced. The optimization
+is disabled on 32-bit hosts; other host platforms have not been runtime-tested.
+
+Relative to commit `d0b9577`, seven alternating fresh-JVM pairs for each of eight
+workloads found security-library and Telegram operation phases approximately
+7-10% faster and TT approximately 3% faster. Small-map signing was near neutral;
+large-map signing and JNA had negative throughput point estimates of about 0.7%
+and 0.8%. Their exploratory intervals include neutrality and small regressions,
+so this is not a claim that every workload is unaffected. All original pairs
+were retained; the earlier short screening runs are not included in these figures.
+
+Paired peak-RSS geometric means ranged from about -2.5% to +1.3%. The two
+security-library workloads increased about 0.7% and 0.9%; TT was noisy, with its
+exploratory ratio interval spanning roughly -8% to +7%. Unchanged entry size does
+not imply zero process-memory cost or a strict peak-memory bound. Fifteen paired
+fresh-JVM starts per workload did not establish a broad cold-start improvement;
+OS caches were not cleared. Intervals are exploratory, single-workload bootstrap
+intervals without multiple-comparison correction, on one host configuration.
+These are incremental results, not an overall 20x speedup.
+
+ARM32/ARM64 upstream units, Java regressions and private differential checks
+passed. Additional checks covered nonidentity virtual mappings above 4 GiB,
+aliases, read-driven victim swaps followed by stores, section renumbering after
+topology changes, permissions/hooks, explicit TLB flushes, split mappings and
+memory snapshots. The complete upstream-plus-patches source sequence was also
+reproduced. IOMMU/subpage paths are conservatively excluded when the eligibility
+conditions do not hold, but were not separately runtime-tested. The previously
+noted write-callback remapping failure remains unchanged. Only the bundled
+Linux x86_64 library was rebuilt and runtime-validated for this patch.
