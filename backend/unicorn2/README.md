@@ -272,3 +272,21 @@ reproduced. IOMMU/subpage paths are conservatively excluded when the eligibility
 conditions do not hold, but were not separately runtime-tested. The previously
 noted write-callback remapping failure remains unchanged. Only the bundled
 Linux x86_64 library was rebuilt and runtime-validated for this patch.
+
+## Validated warm ARM exit handling
+
+Patch `0007` avoids repeatedly generating eligible empty ARM32/ARM64 exit blocks.
+It reuses the existing WFI helper only when code translations are already valid
+and special execution modes/hooks are absent; otherwise it retains translation.
+No persistent cache, SDK check or expected-result substitution is added.
+
+Corrected identical-runtime-path comparisons against `67df098` found repeated
+TT calls approximately 17.3% faster with approximately 72.3% lower peak RSS;
+measured Java allocation was unchanged. Seven other workloads did not establish
+a speedup or a significant sustained regression, which is not proof of
+nonregression. Cold tests found no broad startup improvement and a small
+exploratory Telegram ARM64 RSS increase. Earlier different-path JNA results were
+confounded by the benchmark paths, as confirmed with identical-binary A/A tests.
+See [measurement and validation details](../../docs/performance/WARM_EXIT_RESULTS.md)
+for intervals, limitations, preserved adverse observations and reproduction.
+Only Linux x86_64 was rebuilt and tested. This is not an overall 20x speedup.

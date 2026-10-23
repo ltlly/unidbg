@@ -53,3 +53,24 @@ Intervals are exploratory paired bootstrap intervals, not adjusted for multiple
 comparisons. The demonstrated benefit is cold loading on this generic ARM64
 linker path, not universal startup acceleration, sustained throughput improvement,
 or the requested overall 20x speedup. Only this host configuration was measured.
+
+## Identical-path cold rerun
+
+A later seven-pair, eight-workload cold rerun held both Java-overlay and native
+library pathnames identical between variants. The tested JVM reported its class
+origin and SHA-256 of the ArmLD64 anonymous-service class resource after the
+measured workload; all hashes matched their frozen variant artifacts. Files were
+not replaced until each JVM exited. Native hashes remained identical in both arms.
+
+Telegram64 load improved 1.674x (paired-bootstrap 95% CI 1.555–1.819), wall time
+1.142x (1.098–1.187), and peak RSS decreased 4.1% (C/B 0.9591,
+CI 0.9506–0.9675). Mean load fell from 160.15 to 96.01 ms; wall from 606.02 to
+530.29 ms. Both execution-order strata retained the benefit. The other seven
+workloads' aggregate wall ratio was 1.0078x (0.9894–1.0248), with no individual
+whole-process wall interval establishing a regression. These results support the
+targeted cold-load claim, not universal acceleration or performance equivalence.
+
+Original observations remain above. Exploratory slower short-phase observations
+also remain in the rerun: map2 onload, TT warm/load and JNA close; no corresponding
+whole-process wall interval establishes a regression. Small samples and multiple
+phase comparisons limit causal interpretation.
