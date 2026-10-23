@@ -290,3 +290,18 @@ confounded by the benchmark paths, as confirmed with identical-binary A/A tests.
 See [measurement and validation details](../../docs/performance/WARM_EXIT_RESULTS.md)
 for intervals, limitations, preserved adverse observations and reproduction.
 Only Linux x86_64 was rebuilt and tested. This is not an overall 20x speedup.
+
+## Validated direct cached-RAM section lookup
+
+Patch `0008` uses the current global physical dispatch for an already-validated
+RAM section index at the existing guarded store call site. It removes redundant
+attribute dispatch, without broadening eligibility, retaining raw pointers,
+adding fields or skipping permission/MMU checks. Generic I/O lookup is unchanged.
+
+Seven identical-path pairs per workload against `462a85d` found approximately
+2–5% incremental operation/wall improvements in six of eight workloads; two were
+inconclusive. TT peak RSS increased approximately 2.05 MiB / 1.7% consistently,
+while other long-workload RSS intervals included neutrality. This is a small
+memory tradeoff, not a zero-growth guarantee. Cold tests show no broad startup
+gain. See [full validation and limits](../../docs/performance/DIRECT_RAM_SECTION_RESULTS.md).
+Only Linux x86_64 was rebuilt/runtime-tested; overall 20x is not achieved.
