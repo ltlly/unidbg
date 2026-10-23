@@ -305,3 +305,19 @@ while other long-workload RSS intervals included neutrality. This is a small
 memory tradeoff, not a zero-growth guarantee. Cold tests show no broad startup
 gain. See [full validation and limits](../../docs/performance/DIRECT_RAM_SECTION_RESULTS.md).
 Only Linux x86_64 was rebuilt/runtime-tested; overall 20x is not achieved.
+
+## Guarded AArch64 NOTDIRTY byte stores
+
+Patch `0009` narrows a common AArch64 byte-store helper path while retaining the
+complete dirty tracking and self-modifying-code invalidation call. Other flags,
+hooks, snapshots, permissions and misses keep the original slow path. ARM32's
+cputlb machine-code text is unchanged; no SDK check or persistent cache is added.
+
+Seven independent same-path pairs per workload against `e737a30d` found Telegram
+ARM64 work time about 10.2% lower and process wall about 9.7% lower; other long
+workloads did not establish changes. This is an ARM64 optimization with a
+concentrated measured benefit, not universal acceleration. Long peak RSS was
+near-neutral; a separate cold confirmation observed TT RSS about +350 KiB / 0.4%.
+Cold-start acceleration and strict nonregression are not established. See
+[full results and adverse observations](../../docs/performance/AARCH64_BYTE_STORE_RESULTS.md).
+Only Linux x86_64 was rebuilt and runtime-tested. Overall 20x remains unachieved.
