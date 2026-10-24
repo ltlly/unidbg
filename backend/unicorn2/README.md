@@ -321,3 +321,20 @@ near-neutral; a separate cold confirmation observed TT RSS about +350 KiB / 0.4%
 Cold-start acceleration and strict nonregression are not established. See
 [full results and adverse observations](../../docs/performance/AARCH64_BYTE_STORE_RESULTS.md).
 Only Linux x86_64 was rebuilt and runtime-tested. Overall 20x remains unachieved.
+
+
+## Guarded ARM32 word and AArch64 doubleword stores
+
+Patch `0010` adds narrow little-endian 4-byte ARM32 and 8-byte AArch64 NOTDIRTY
+store paths on 64-bit hosts, retaining alignment, mapping/permission guards and
+complete dirty/SMC handling. Other cases retain the original fallback; no new
+cache or per-engine field is added.
+
+Seven same-path pairs per workload against `cae8988` found equal-case long work
+about 5.3% lower and process wall about 4.8% lower, concentrated in security-library
+and Telegram workloads. Aggregate peak RSS was near-neutral. Independent targeted
+confirmation did not consistently reproduce initial map-memory/load regressions,
+but observed JNA startup approximately 5 ms higher on average, and cold whole-process
+intervals still allow small regressions. This is not a universal startup improvement or a
+strict nonregression guarantee. See [full results and limits](../../docs/performance/GUARDED_WIDE_STORE_RESULTS.md).
+Only Linux x86_64 was rebuilt and runtime-tested. Overall 20x remains unachieved.
