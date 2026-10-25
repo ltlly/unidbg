@@ -1,0 +1,110 @@
+--- a/qemu/exec.c
++++ b/qemu/exec.c
+@@ -974,6 +974,13 @@
+     return result;
+ }
+ 
++static int ram_offset_compare(const void *left, const void *right)
++{
++    const RAMBlock *a = *(RAMBlock *const *)left;
++    const RAMBlock *b = *(RAMBlock *const *)right;
++    return (a->offset > b->offset) - (a->offset < b->offset);
++}
++
+ /* Allocate space within the ram_addr_t space that governs the
+  * dirty bitmaps.
+  * Called with the ramlist lock held.
+@@ -982,6 +989,9 @@
+ {
+     RAMBlock *block, *next_block;
+     ram_addr_t offset = RAM_ADDR_MAX, mingap = RAM_ADDR_MAX;
++    RAMBlock *local_index[128], **index = local_index;
++    size_t count = 0, i = 0;
++    bool heap_index = false;
+ 
+     assert(size != 0); /* it would hand out same offset multiple times */
+ 
+@@ -991,6 +1001,35 @@
+ 
+     if (!uc->ram_list.freed) {
+         return find_ram_offset_last(uc, size);
++    }
++
++    /* A temporary index accelerates the inner lookup, without changing the
++     * authoritative size-ordered list or its equal-gap tie behavior. */
++    RAMBLOCK_FOREACH(block) {
++        count++;
++    }
++    if (count > sizeof(local_index) / sizeof(local_index[0])) {
++        index = count <= SIZE_MAX / sizeof(*index)
++                    ? malloc(count * sizeof(*index)) : NULL;
++        heap_index = index != NULL;
++    }
++    if (index) {
++        RAMBLOCK_FOREACH(block) {
++            index[i++] = block;
++        }
++        qsort(index, count, sizeof(*index), ram_offset_compare);
++        for (i = 0; i < count; i++) {
++            if (index[i]->max_length > RAM_ADDR_MAX - index[i]->offset ||
++                (i && index[i - 1]->max_length >
++                          index[i]->offset - index[i - 1]->offset)) {
++                if (heap_index) {
++                    free(index);
++                    heap_index = false;
++                }
++                index = NULL;
++                break;
++            }
++        }
+     }
+ 
+     RAMBLOCK_FOREACH(block) {
+@@ -1012,13 +1051,31 @@
+         /* Search for the closest following block
+          * and find the gap.
+          */
+-        RAMBLOCK_FOREACH(next_block) {
+-            if (next_block->offset >= candidate) {
+-                next = MIN(next, next_block->offset);
+-            } else if (candidate - next_block->offset < next_block->max_length) {
+-                /* Alignment may land inside another live block. */
++        if (index) {
++            size_t lo = 0, hi = count;
++            while (lo < hi) {
++                size_t mid = lo + (hi - lo) / 2;
++                if (index[mid]->offset < candidate) {
++                    lo = mid + 1;
++                } else {
++                    hi = mid;
++                }
++            }
++            if (lo < count) {
++                next = index[lo]->offset;
++            }
++            if (lo && candidate - index[lo - 1]->offset <
++                          index[lo - 1]->max_length) {
+                 next = candidate;
+-                break;
++            }
++        } else {
++            RAMBLOCK_FOREACH(next_block) {
++                if (next_block->offset >= candidate) {
++                    next = MIN(next, next_block->offset);
++                } else if (candidate - next_block->offset < next_block->max_length) {
++                    next = candidate;
++                    break;
++                }
+             }
+         }
+ 
+@@ -1032,6 +1089,9 @@
+         }
+     }
+ 
++    if (heap_index) {
++        free(index);
++    }
+     if (offset == RAM_ADDR_MAX) {
+         fprintf(stderr, "Failed to find gap of requested size: %" PRIu64 "\n",
+                 (uint64_t)size);
