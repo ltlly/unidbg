@@ -1,0 +1,30 @@
+--- a/qemu/accel/tcg/translate-all.c
++++ b/qemu/accel/tcg/translate-all.c
+@@ -1026,7 +1026,26 @@
+ #ifdef USE_MAP_JIT
+     flags |= MAP_JIT;
+ #endif
+-    buf = mmap(NULL, size, prot, flags, -1, 0);
++    void *hint = NULL;
++#if defined(__linux__) && defined(__x86_64__) && !defined(__ILP32__) && !defined(USE_MAP_JIT)
++    /* A non-fixed hint can keep ordinary arenas near native helper text.
++     * Keep larger configured arenas on the original allocation path. The
++     * emitter still checks the displacement of every individual call/jump. */
++    const uintptr_t gap = (uintptr_t)64 << 20;
++    uintptr_t anchor = (uintptr_t)uc->tcg_exec_init;
++    size_t page = uc->qemu_real_host_page_size;
++    if (anchor && size <= ((size_t)1 << 30) && page && page <= gap &&
++        (page & (page - 1)) == 0 && anchor <= UINTPTR_MAX - gap) {
++        uintptr_t base = (anchor + gap) & ~((uintptr_t)page - 1);
++        if (size <= UINTPTR_MAX - base) {
++            hint = (void *)base;
++        }
++    }
++#endif
++    buf = mmap(hint, size, prot, flags, -1, 0);
++    if (buf == MAP_FAILED && hint) {
++        buf = mmap(NULL, size, prot, flags, -1, 0);
++    }
+     if (buf == MAP_FAILED) {
+         return NULL;
+     }
