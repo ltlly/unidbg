@@ -1,0 +1,52 @@
+--- a/qemu/exec.c
++++ b/qemu/exec.c
+@@ -959,11 +959,16 @@
+ static ram_addr_t find_ram_offset_last(struct uc_struct *uc, ram_addr_t size)
+ {
+     ram_addr_t result = 0;
+-    RAMBlock *block = uc->ram_list.last_block;
+-
+-    result = block->offset + block->max_length;
+-
+-    if (result + size > RAM_ADDR_MAX) {
++    RAMBlock *block;
++
++    /* The list is ordered by size, not by offset or insertion time. */
++    RAMBLOCK_FOREACH(block) {
++        if (block->max_length > RAM_ADDR_MAX - block->offset) {
++            abort();
++        }
++        result = MAX(result, block->offset + block->max_length);
++    }
++    if (size > RAM_ADDR_MAX - result) {
+         abort();
+     }
+     return result;
+@@ -994,8 +999,15 @@
+         /* Align blocks to start on a 'long' in the bitmap
+          * which makes the bitmap sync'ing take the fast path.
+          */
++        ram_addr_t alignment = (ram_addr_t)BITS_PER_LONG << TARGET_PAGE_BITS;
++        if (block->max_length > RAM_ADDR_MAX - block->offset) {
++            continue;
++        }
+         candidate = block->offset + block->max_length;
+-        candidate = ROUND_UP(candidate, BITS_PER_LONG << TARGET_PAGE_BITS);
++        if (candidate > RAM_ADDR_MAX - (alignment - 1)) {
++            continue;
++        }
++        candidate = ROUND_UP(candidate, alignment);
+ 
+         /* Search for the closest following block
+          * and find the gap.
+@@ -1003,6 +1015,10 @@
+         RAMBLOCK_FOREACH(next_block) {
+             if (next_block->offset >= candidate) {
+                 next = MIN(next, next_block->offset);
++            } else if (candidate - next_block->offset < next_block->max_length) {
++                /* Alignment may land inside another live block. */
++                next = candidate;
++                break;
+             }
+         }
+ 
