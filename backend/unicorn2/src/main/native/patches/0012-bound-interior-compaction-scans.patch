@@ -1,0 +1,124 @@
+--- a/qemu/exec.c
++++ b/qemu/exec.c
+@@ -66,12 +66,19 @@
+ 
+ typedef PhysPageEntry Node[P_L2_SIZE];
+ 
++/* Conservative initialized child span; indexed independently of edges. */
++typedef struct NodeBounds {
++    uint16_t first;
++    uint16_t last;
++} NodeBounds;
++
+ typedef struct PhysPageMap {
+     unsigned sections_nb;
+     unsigned sections_nb_alloc;
+     unsigned nodes_nb;
+     unsigned nodes_nb_alloc;
+     Node *nodes;
++    NodeBounds *bounds;
+     MemoryRegionSection *sections;
+ } PhysPageMap;
+ 
+@@ -105,6 +112,7 @@
+     if (map->nodes_nb + nodes > map->nodes_nb_alloc) {
+         map->nodes_nb_alloc = MAX(d->uc->alloc_hint, map->nodes_nb + nodes);
+         map->nodes = g_renew(Node, map->nodes, map->nodes_nb_alloc);
++        map->bounds = g_renew(NodeBounds, map->bounds, map->nodes_nb_alloc);
+         d->uc->alloc_hint = map->nodes_nb_alloc;
+     }
+ }
+@@ -121,6 +129,8 @@
+     assert(ret != PHYS_MAP_NODE_NIL);
+     assert(ret != map->nodes_nb_alloc);
+ 
++    map->bounds[ret].first = leaf ? 0 : P_L2_SIZE;
++    map->bounds[ret].last = leaf ? P_L2_SIZE : 0;
+     e.skip = leaf ? 0 : 1;
+     e.ptr = leaf ? PHYS_SECTION_UNASSIGNED : PHYS_MAP_NODE_NIL;
+     for (i = 0; i < P_L2_SIZE; ++i) {
+@@ -135,12 +145,16 @@
+ {
+     PhysPageEntry *p;
+     hwaddr step = (hwaddr)1 << (level * P_L2_BITS);
++    uint32_t node;
++    unsigned first;
+ 
+     if (lp->skip && lp->ptr == PHYS_MAP_NODE_NIL) {
+         lp->ptr = phys_map_node_alloc(map, level == 0);
+     }
+-    p = map->nodes[lp->ptr];
+-    lp = &p[(*index >> (level * P_L2_BITS)) & (P_L2_SIZE - 1)];
++    node = lp->ptr;
++    p = map->nodes[node];
++    first = (*index >> (level * P_L2_BITS)) & (P_L2_SIZE - 1);
++    lp = &p[first];
+ 
+     while (*nb && lp < &p[P_L2_SIZE]) {
+         if ((*index & (step - 1)) == 0 && *nb >= step) {
+@@ -153,6 +167,11 @@
+         }
+         ++lp;
+     }
++    if (level != 0 && lp != &p[first]) {
++        NodeBounds *bound = &map->bounds[node];
++        bound->first = MIN(bound->first, first);
++        bound->last = MAX(bound->last, lp - p);
++    }
+ }
+ 
+ static void phys_page_set(AddressSpaceDispatch *d,
+@@ -172,7 +191,7 @@
+  * and update our entry so we can skip it and go directly to the destination.
+  */
+ static void phys_page_compact(struct uc_struct *uc, PhysPageEntry *lp, Node *nodes,
+-                              int level)
++                              NodeBounds *bounds, int level)
+ {
+     unsigned valid_ptr = P_L2_SIZE;
+     int valid = 0;
+@@ -193,7 +212,8 @@
+     }
+ 
+     p = nodes[lp->ptr];
+-    for (i = 0; i < P_L2_SIZE; i++) {
++    NodeBounds bound = bounds[lp->ptr];
++    for (i = bound.first; i < bound.last; i++) {
+         if (p[i].ptr == PHYS_MAP_NODE_NIL) {
+             continue;
+         }
+@@ -201,7 +221,7 @@
+         valid_ptr = i;
+         valid++;
+         if (p[i].skip) {
+-            phys_page_compact(uc, &p[i], nodes, level);
++            phys_page_compact(uc, &p[i], nodes, bounds, level);
+         }
+     }
+ 
+@@ -238,7 +258,8 @@
+     struct uc_struct *uc = d->uc;
+ #endif
+     if (d->phys_map.skip) {
+-        phys_page_compact(d->uc, &d->phys_map, d->map.nodes, P_L2_LEVELS);
++        phys_page_compact(d->uc, &d->phys_map, d->map.nodes,
++                          d->map.bounds, P_L2_LEVELS);
+     }
+ }
+ 
+@@ -865,6 +886,7 @@
+     }
+     g_free(map->sections);
+     g_free(map->nodes);
++    g_free(map->bounds);
+ }
+ 
+ static void register_subpage(struct uc_struct *uc, FlatView *fv, MemoryRegionSection *section)
+@@ -1557,6 +1579,7 @@
+     }
+     g_free(d->map.sections);
+     g_free(d->map.nodes);
++    g_free(d->map.bounds);
+     g_free(d);
+ }
+ 
