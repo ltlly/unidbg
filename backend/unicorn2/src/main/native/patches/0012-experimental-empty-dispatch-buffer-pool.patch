@@ -1,0 +1,108 @@
+--- a/qemu/exec.c
++++ b/qemu/exec.c
+@@ -857,12 +857,17 @@
+     }
+ }
+ 
+-static void phys_sections_free(PhysPageMap *map)
++static void phys_sections_destroy(PhysPageMap *map)
+ {
+     while (map->sections_nb > 0) {
+         MemoryRegionSection *section = &map->sections[--map->sections_nb];
+         phys_section_destroy(section->mr);
+     }
++}
++
++static void phys_sections_free(PhysPageMap *map)
++{
++    phys_sections_destroy(map);
+     g_free(map->sections);
+     g_free(map->nodes);
+ }
+@@ -1528,7 +1533,17 @@
+ 
+ AddressSpaceDispatch *address_space_dispatch_new(struct uc_struct *uc, FlatView *fv)
+ {
+-    AddressSpaceDispatch *d = g_new0(AddressSpaceDispatch, 1);
++    AddressSpaceDispatch *d = NULL;
++    if (!uc->ram_cache_closing && uc->snapshot_level == 0) {
++        d = uc->dispatch_cache;
++        uc->dispatch_cache = NULL;
++    }
++    if (!d) {
++        d = g_new0(AddressSpaceDispatch, 1);
++    } else {
++        assert(d->map.sections_nb == 0 && d->map.nodes_nb == 0);
++        d->mru_section = NULL;
++    }
+ #ifndef NDEBUG
+     uint16_t n;
+ 
+@@ -1560,8 +1575,32 @@
+     g_free(d);
+ }
+ 
++static bool dispatch_cache_admissible(AddressSpaceDispatch *d)
++{
++    struct uc_struct *uc = d->uc;
++    size_t remaining = 65536 - sizeof(*d);
++    if (!uc->init_done || uc->ram_cache_closing || uc->snapshot_level != 0 ||
++        uc->dispatch_cache) {
++        return false;
++    }
++    if (d->map.sections_nb_alloc > remaining / sizeof(*d->map.sections)) {
++        return false;
++    }
++    remaining -= d->map.sections_nb_alloc * sizeof(*d->map.sections);
++    return d->map.nodes_nb_alloc <= remaining / sizeof(*d->map.nodes);
++}
++
+ void address_space_dispatch_free(AddressSpaceDispatch *d)
+ {
++    if (dispatch_cache_admissible(d)) {
++        /* Destruction is unchanged: no MemoryRegion or subpage survives. */
++        phys_sections_destroy(&d->map);
++        d->map.nodes_nb = 0;
++        d->mru_section = NULL;
++        d->phys_map = (PhysPageEntry) { .ptr = PHYS_MAP_NODE_NIL, .skip = 1 };
++        d->uc->dispatch_cache = d;
++        return;
++    }
+     phys_sections_free(&d->map);
+     g_free(d);
+ }
+--- a/include/uc_priv.h
++++ b/include/uc_priv.h
+@@ -449,6 +449,8 @@
+     size_t ram_cache_count;
+     size_t ram_cache_other_bytes;
+     bool ram_cache_closing;
++    // One fully released dispatcher; only empty host buffer capacities survive.
++    struct AddressSpaceDispatch *dispatch_cache;
+ };
+ 
+ // Metadata stub for the variable-size cpu context used with uc_context_*()
+--- a/qemu/unicorn_common.h
++++ b/qemu/unicorn_common.h
+@@ -5,6 +5,7 @@
+ #include "tcg/tcg.h"
+ #include "qemu-common.h"
+ #include "exec/memory.h"
++#include "exec/memory-internal.h"
+ #include "exec/cpu_ldst.h"
+ 
+ // This header define common patterns/codes that will be included in all arch-sepcific
+@@ -132,6 +133,13 @@
+     memory_free(s->uc);
+     address_space_destroy(&s->uc->address_space_memory);
+     address_space_destroy(&s->uc->address_space_io);
++    if (s->uc->dispatch_cache) {
++        AddressSpaceDispatch *cached = s->uc->dispatch_cache;
++        s->uc->dispatch_cache = NULL;
++        /* uc_close marks closing before invoking this arch release. */
++        assert(s->uc->ram_cache_closing);
++        address_space_dispatch_free(cached);
++    }
+     /* clean up uc->l1_map. */
+     tb_cleanup(s->uc);
+     /* clean up tcg_ctx->code_gen_buffer. */
