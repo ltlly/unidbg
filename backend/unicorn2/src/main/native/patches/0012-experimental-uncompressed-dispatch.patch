@@ -1,0 +1,85 @@
+--- a/qemu/exec.c
++++ b/qemu/exec.c
+@@ -168,78 +168,12 @@
+     phys_page_set_level(&d->map, &d->phys_map, &index, &nb, leaf, P_L2_LEVELS - 1);
+ }
+ 
+-/* Compact a non leaf page entry. Simply detect that the entry has a single child,
+- * and update our entry so we can skip it and go directly to the destination.
+- */
+-static void phys_page_compact(struct uc_struct *uc, PhysPageEntry *lp, Node *nodes,
+-                              int level)
+-{
+-    unsigned valid_ptr = P_L2_SIZE;
+-    int valid = 0;
+-    PhysPageEntry *p;
+-    int i;
+-
+-    if (lp->ptr == PHYS_MAP_NODE_NIL) {
+-        return;
+-    }
+-
+-    /* Track the same radix level as phys_page_find, including compressed
+-     * edges. Terminal nodes contain P_L2_SIZE leaf section entries (even
+-     * holes use PHYS_SECTION_UNASSIGNED), so their scan cannot recurse or
+-     * find a single child. Leave those already compact nodes untouched. */
+-    level -= lp->skip;
+-    if (level == 0) {
+-        return;
+-    }
+-
+-    p = nodes[lp->ptr];
+-    for (i = 0; i < P_L2_SIZE; i++) {
+-        if (p[i].ptr == PHYS_MAP_NODE_NIL) {
+-            continue;
+-        }
+-
+-        valid_ptr = i;
+-        valid++;
+-        if (p[i].skip) {
+-            phys_page_compact(uc, &p[i], nodes, level);
+-        }
+-    }
+-
+-    /* We can only compress if there's only one child. */
+-    if (valid != 1) {
+-        return;
+-    }
+-
+-    assert(valid_ptr < P_L2_SIZE);
+-
+-    /* Don't compress if it won't fit in the # of bits we have. */
+-    if (P_L2_LEVELS >= (1 << 6) &&
+-        lp->skip + p[valid_ptr].skip >= (1 << 6)) {
+-        return;
+-    }
+-
+-    lp->ptr = p[valid_ptr].ptr;
+-    if (!p[valid_ptr].skip) {
+-        /* If our only child is a leaf, make this a leaf. */
+-        /* By design, we should have made this node a leaf to begin with so we
+-         * should never reach here.
+-         * But since it's so simple to handle this, let's do it just in case we
+-         * change this rule.
+-         */
+-        lp->skip = 0;
+-    } else {
+-        lp->skip += p[valid_ptr].skip;
+-    }
+-}
+-
++/* Construction already produces a complete queryable radix tree. Keeping
++ * that representation avoids rescanning all nodes after each topology change;
++ * section identities, holes and lookup bounds are unchanged. */
+ void address_space_dispatch_compact(AddressSpaceDispatch *d)
+ {
+-#ifdef TARGET_ARM
+-    struct uc_struct *uc = d->uc;
+-#endif
+-    if (d->phys_map.skip) {
+-        phys_page_compact(d->uc, &d->phys_map, d->map.nodes, P_L2_LEVELS);
+-    }
++    (void)d;
+ }
+ 
+ static inline bool section_covers_addr(const MemoryRegionSection *section,
