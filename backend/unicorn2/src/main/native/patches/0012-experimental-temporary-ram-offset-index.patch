@@ -1,6 +1,6 @@
 --- a/qemu/exec.c
 +++ b/qemu/exec.c
-@@ -974,6 +974,13 @@
+@@ -974,14 +974,24 @@
      return result;
  }
  
@@ -14,7 +14,9 @@
  /* Allocate space within the ram_addr_t space that governs the
   * dirty bitmaps.
   * Called with the ramlist lock held.
-@@ -982,6 +989,9 @@
+  */
+-static ram_addr_t find_ram_offset(struct uc_struct *uc, ram_addr_t size)
++static QEMU_NOINLINE ram_addr_t find_ram_offset_indexed(struct uc_struct *uc, ram_addr_t size)
  {
      RAMBlock *block, *next_block;
      ram_addr_t offset = RAM_ADDR_MAX, mingap = RAM_ADDR_MAX;
@@ -24,7 +26,7 @@
  
      assert(size != 0); /* it would hand out same offset multiple times */
  
-@@ -991,6 +1001,35 @@
+@@ -991,6 +1001,128 @@
  
      if (!uc->ram_list.freed) {
          return find_ram_offset_last(uc, size);
@@ -57,18 +59,27 @@
 +                break;
 +            }
 +        }
-     }
- 
-     RAMBLOCK_FOREACH(block) {
-@@ -1012,13 +1051,31 @@
-         /* Search for the closest following block
-          * and find the gap.
-          */
--        RAMBLOCK_FOREACH(next_block) {
--            if (next_block->offset >= candidate) {
--                next = MIN(next, next_block->offset);
--            } else if (candidate - next_block->offset < next_block->max_length) {
--                /* Alignment may land inside another live block. */
++    }
++
++    RAMBLOCK_FOREACH(block) {
++        ram_addr_t candidate, next = RAM_ADDR_MAX;
++
++        /* Align blocks to start on a 'long' in the bitmap
++         * which makes the bitmap sync'ing take the fast path.
++         */
++        ram_addr_t alignment = (ram_addr_t)BITS_PER_LONG << TARGET_PAGE_BITS;
++        if (block->max_length > RAM_ADDR_MAX - block->offset) {
++            continue;
++        }
++        candidate = block->offset + block->max_length;
++        if (candidate > RAM_ADDR_MAX - (alignment - 1)) {
++            continue;
++        }
++        candidate = ROUND_UP(candidate, alignment);
++
++        /* Search for the closest following block
++         * and find the gap.
++         */
 +        if (index) {
 +            size_t lo = 0, hi = count;
 +            while (lo < hi) {
@@ -84,8 +95,7 @@
 +            }
 +            if (lo && candidate - index[lo - 1]->offset <
 +                          index[lo - 1]->max_length) {
-                 next = candidate;
--                break;
++                next = candidate;
 +            }
 +        } else {
 +            RAMBLOCK_FOREACH(next_block) {
@@ -95,16 +105,53 @@
 +                    next = candidate;
 +                    break;
 +                }
-             }
-         }
- 
-@@ -1032,6 +1089,9 @@
-         }
-     }
- 
++            }
++        }
++
++        /* If it fits remember our place and remember the size
++         * of gap, but keep going so that we might find a smaller
++         * gap to fill so avoiding fragmentation.
++         */
++        if (next - candidate >= size && next - candidate < mingap) {
++            offset = candidate;
++            mingap = next - candidate;
++        }
++    }
++
 +    if (heap_index) {
 +        free(index);
 +    }
-     if (offset == RAM_ADDR_MAX) {
-         fprintf(stderr, "Failed to find gap of requested size: %" PRIu64 "\n",
-                 (uint64_t)size);
++    if (offset == RAM_ADDR_MAX) {
++        fprintf(stderr, "Failed to find gap of requested size: %" PRIu64 "\n",
++                (uint64_t)size);
++        abort();
++    }
++
++    return offset;
++}
++
++static ram_addr_t find_ram_offset(struct uc_struct *uc, ram_addr_t size)
++{
++    RAMBlock *block, *next_block;
++    ram_addr_t offset = RAM_ADDR_MAX, mingap = RAM_ADDR_MAX;
++
++    assert(size != 0); /* it would hand out same offset multiple times */
++
++    if (QLIST_EMPTY_RCU(&uc->ram_list.blocks)) {
++        return 0;
++    }
++
++    if (!uc->ram_list.freed) {
++        return find_ram_offset_last(uc, size);
++    }
++
++    /* Small collections retain the simple scan. Keep the bounded scratch
++     * index in a separate frame so ordinary allocation does not reserve it. */
++    size_t count = 0;
++    RAMBLOCK_FOREACH(block) {
++        if (++count == 64) {
++            return find_ram_offset_indexed(uc, size);
++        }
+     }
+ 
+     RAMBLOCK_FOREACH(block) {
