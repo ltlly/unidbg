@@ -1,0 +1,24 @@
+--- a/qemu/exec.c
++++ b/qemu/exec.c
+@@ -142,6 +142,21 @@
+     p = map->nodes[lp->ptr];
+     lp = &p[(*index >> (level * P_L2_BITS)) & (P_L2_SIZE - 1)];
+ 
++    /* A terminal node contains only section leaves. Fill its covered span
++     * without reloading/updating the range counters for every single page. */
++    if (level == 0) {
++        uint64_t count = MIN(*nb, (uint64_t)(&p[P_L2_SIZE] - lp));
++        PhysPageEntry entry = { .skip = 0, .ptr = leaf };
++        uint64_t i;
++
++        for (i = 0; i < count; i++) {
++            lp[i] = entry;
++        }
++        *index += count;
++        *nb -= count;
++        return;
++    }
++
+     while (*nb && lp < &p[P_L2_SIZE]) {
+         if ((*index & (step - 1)) == 0 && *nb >= step) {
+             lp->skip = 0;
