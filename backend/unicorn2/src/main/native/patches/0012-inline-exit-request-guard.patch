@@ -1,0 +1,44 @@
+--- a/qemu/tcg/i386/tcg-target.inc.c
++++ b/qemu/tcg/i386/tcg-target.inc.c
+@@ -24,6 +24,10 @@
+ 
+ #include "../tcg-pool.inc.c"
+ 
++#if defined(__linux__) && defined(TARGET_ARM) && TCG_TARGET_REG_BITS == 64
++#include "exec/helper-proto.h"
++#endif
++
+ #ifdef _MSC_VER
+ #include <intrin.h>
+ #endif
+@@ -1628,6 +1632,30 @@
+ 
+ static inline void tcg_out_call(TCGContext *s, tcg_insn_unit *dest)
+ {
++#if defined(__linux__) && defined(TARGET_ARM) && TCG_TARGET_REG_BITS == 64
++    if (dest == (tcg_insn_unit *)HELPER(check_exit_request)) {
++        tcg_insn_unit *skip;
++        const int offset = (int)offsetof(ArchCPU, neg.icount_decr.u32) -
++                           (int)offsetof(ArchCPU, env);
++        QEMU_BUILD_BUG_ON(sizeof(ArchCPU) > INT_MAX);
++
++        /* Match cpu_loop_exit_requested() without a C call on its common
++         * returning path. This is only an emitter-local branch: keep the
++         * helper's original TCG call flags, global synchronization, and
++         * register clobbers, including the reload barrier after callbacks.
++         * A pending exit still uses the original helper and delay-slot logic.
++         */
++        tcg_out_modrm_offset(s, OPC_ARITH_EvIb, ARITH_CMP, TCG_AREG0, offset);
++        tcg_out8(s, 0);
++        tcg_out8(s, OPC_JCC_short + JCC_JNS);
++        skip = s->code_ptr;
++        tcg_out8(s, 0);
++        tcg_out_branch(s, 1, dest);
++        tcg_debug_assert(s->code_ptr - (skip + 1) <= INT8_MAX);
++        tcg_patch8(skip, s->code_ptr - (skip + 1));
++        return;
++    }
++#endif
+     tcg_out_branch(s, 1, dest);
+ }
+ 
