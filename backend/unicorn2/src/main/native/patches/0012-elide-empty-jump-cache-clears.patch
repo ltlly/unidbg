@@ -1,0 +1,65 @@
+--- a/qemu/include/hw/core/cpu.h
++++ b/qemu/include/hw/core/cpu.h
+@@ -319,6 +319,10 @@
+     // Set to force TCG to stop executing linked TBs for this
+     // CPU and return to its top level loop.
+     volatile sig_atomic_t tcg_exit_req;
++
++    /* Conservative: every jump-cache fill sets this; partial invalidation
++     * may leave it true. Only a complete clear proves the cache empty. */
++    bool tb_jmp_cache_maybe_nonempty;
+ };
+ 
+ #define CPU(obj) ((CPUState *)(obj))
+@@ -329,9 +333,13 @@
+ {
+     unsigned int i;
+ 
++    if (!cpu->tb_jmp_cache_maybe_nonempty) {
++        return;
++    }
+     for (i = 0; i < TB_JMP_CACHE_SIZE; i++) {
+         cpu->tb_jmp_cache[i] = NULL;
+     }
++    cpu->tb_jmp_cache_maybe_nonempty = false;
+ }
+ 
+ /**
+--- a/qemu/include/exec/tb-lookup.h
++++ b/qemu/include/exec/tb-lookup.h
+@@ -44,6 +44,7 @@
+     if (tb == NULL) {
+         return NULL;
+     }
++    cpu->tb_jmp_cache_maybe_nonempty = true;
+     cpu->tb_jmp_cache[hash] = tb;
+     return tb;
+ }
+--- a/qemu/accel/tcg/cpu-exec.c
++++ b/qemu/accel/tcg/cpu-exec.c
+@@ -335,6 +335,7 @@
+     if (tb == NULL) {
+         tb = tb_gen_code_for_exec(cpu, pc, cs_base, flags, cf_mask);
+         /* We add the TB in the virtual pc hash table for the fast lookup */
++        cpu->tb_jmp_cache_maybe_nonempty = true;
+         cpu->tb_jmp_cache[tb_jmp_cache_hash_func(cpu->uc, pc)] = tb;
+ 
+         if (uc->last_tb) {
+--- a/qemu/accel/tcg/translate-all.c
++++ b/qemu/accel/tcg/translate-all.c
+@@ -1180,6 +1180,7 @@
+                    (tb_cflags(tb) & (CF_HASH_MASK | CF_INVALID)) == cflags))) {
+ 
+         tb = tb_htable_lookup(cpu, pc, cs_base, flags, cflags);
++        cpu->tb_jmp_cache_maybe_nonempty = true;
+         cpu->tb_jmp_cache[hash] = tb;
+ 
+         if (tb == NULL) {
+@@ -1187,6 +1188,7 @@
+             tb = tb_gen_code(cpu, pc, cs_base, flags, cflags);
+             mmap_unlock();
+             /* We add the TB in the virtual pc hash table for the fast lookup */
++            cpu->tb_jmp_cache_maybe_nonempty = true;
+             cpu->tb_jmp_cache[hash] = tb;
+         }
+     }
