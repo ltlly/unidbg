@@ -1,0 +1,21 @@
+--- a/qemu/accel/tcg/cputlb.c
++++ b/qemu/accel/tcg/cputlb.c
+@@ -288,12 +288,17 @@
+     CPUArchState *env = cpu->env_ptr;
+     uint16_t asked = data.host_int;
+     uint16_t all_dirty, work, to_clean;
+-    int64_t now = get_clock_realtime();
++    int64_t now = 0;
+ 
+     all_dirty = env_tlb(env)->c.dirty;
+     to_clean = asked & all_dirty;
+     all_dirty &= ~to_clean;
+     env_tlb(env)->c.dirty = all_dirty;
++
++    /* No resize consumes a timestamp when no MMU needs cleaning. */
++    if (to_clean != 0) {
++        now = get_clock_realtime();
++    }
+ 
+     for (work = to_clean; work != 0; work &= work - 1) {
+         int mmu_idx = ctz32(work);
