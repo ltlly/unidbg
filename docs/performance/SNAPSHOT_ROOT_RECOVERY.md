@@ -1,35 +1,33 @@
-# Snapshot root identity repair: experimental recovery checkpoint
+# Snapshot root identity: bounded correctness validation
 
-This is a correctness investigation, not an accepted performance optimization. Based on the independent RAM-identity source baseline. None of the held jump-cache, clock-elision or snapshot moveout performance patches is included. Production remains unchanged; overall 20x is not achieved.
+Source-only experiment over RAM identity baseline f77f9a2. None of the held jump-cache, clock or duplicate-moveout performance patches is included. Production remains unchanged. Overall 20x performance is not achieved and this report makes no speed claim.
 
-## Invariant
+## Changes
 
-The public mapping index refers to absolute root mappings, not container-relative COW children. Converting a RAM mapping to a container replaces the index entry with that root and retains permissions and birth priority. Snapshot moveout removes the root from the index. Restore keeps earlier detached-level sentinels intact, filters newer layers before publishing topology, discards roots created after the target snapshot, and registers the surviving root rather than a potentially removed child.
+The public mapping index tracks complete absolute root mappings, rather than relative-address COW children. Container conversion preserves the original root's priority and permissions. Moveout removes the indexed root. Restore filters newer layers before publishing the surviving root, discards mappings born after the target snapshot, and keeps earlier unmap-level sentinels intact.
 
-## Fresh evidence after interruption
+FlatView growth allocates a temporary buffer before replacing the old one. A recoverable allocation failure preserves its previous ranges/count/dispatcher. Context restore restores its previous snapshot level and JIT state on that error.
 
-The earlier unpublished working directory and its tests were lost. Historical test claims are not substituted for fresh verification. Source was reconstructed, archived and fully rebuilt on October 27.
+Before changing restore state, preflight identifies precisely the roots surviving the existing shallow filter, checks active/queued and queued/queued overlap, and reserves enough mapping-index capacity. Registration then uses a no-allocation insertion helper. Standard realloc preserves the old index on failure; the active compatibility allocator's free-on-failure behavior is not used at this call site. No global allocator semantic change is made. Ordinary map insertion rejects counts beyond the signed binary-search bound. Overlap comparisons handle a legal mapping ending exactly at 2^64. Capacity rounding uses the source MEM_BLOCK_INCR (32), with overflow guards.
 
-Initial recovered static archive SHA256: fb7c502f9dcb3f0699b7a5990b8f0e1839ad239586077b8874e17a7d458eba20.
+## Fresh final checks, October 27
 
-Fresh checks pass:
-- ARM32 and ARM64 native unit suites.
-- Callback/nesting/timeout and store checks, RAM identity/lifecycle and subpage checks.
-- Twelve public-API snapshot cases: ARM32/ARM64 x 1/2/16 regions x COW/non-COW, each 200 restore rounds with exact byte checks.
-- Per architecture, 100 nested-snapshot cycles with three repeated inner restores, absolute mapping enumeration, overlap rejection and removal of roots born after the restored snapshot.
+Final Linux x86_64 native SHA256: 6e952301e5165a6e013fbdb1815020b5f9564877a72d30a9830de1cfeb16b03e.
 
-These checks do not establish comprehensive memory safety. No sanitizer completion, fresh JUnit suite, other-architecture coverage or performance benefit is claimed. Source/tests/logs are separate; only source patch and this report enter Git.
+- ARM32/ARM64 native unit suites, callback/nested/timeout/store checks, RAM identity/lifecycle and subpage checks pass.
+- Twelve public-API snapshot cases (two architectures, 1/2/16 regions, COW/non-COW) each pass 200 restoration rounds with exact byte checks.
+- Per architecture, 100 nested snapshot cycles with three inner restores pass, checking absolute mapping enumeration, overlap refusal, and removal of post-snapshot roots.
+- Linker-wrapped calloc failure tests pass for growing a saved context and restoring a larger context. They verify NOMEM, preserved state/context, and successful retry.
+- Linker-wrapped realloc failure before restore passes with the old index pointer/count/level/queue sentinel and current visibility preserved; retry succeeds.
+- Explicit internal conflict injections exercise both active/queued and queued/queued preflight refusal before mutation, then successful retry after removing the injected inconsistency. These guard tests are not claims of a real-world conflicting valid history.
+- A real ARM64 mapping ending at 2^64 exercises end-wrap overlap refusal and retry.
+- Eight ordinary Java workload smoke runs pass with actual loaded native hashes; this is not a timing comparison or full JUnit run.
+- AddressSanitizer and UndefinedBehaviorSanitizer runs pass for nested snapshots on both architectures and COW restore at 16 regions x200 rounds and 128 regions x100 rounds. No sanitizer diagnostics occurred in those runs.
 
-## Remaining blockers
+LeakSanitizer initially could not operate in the tracing environment and exited with a runtime limitation. Those failures are preserved. The address/undefined-behavior checks were then run with leak detection disabled, explicitly as separate checks. No leak-free claim is made. Earlier lost working-directory results are not substituted for these fresh records.
 
-Restore allocation-failure and overlap-error partial-state consistency remains unresolved. The current algorithm copies the saved FlatView before restoring topology; an early error may leave a view inconsistent with the actually restored tree. Register-allocation failure is returned and queue ownership retained, but that alone does not prove visibility consistency. Allocation-failure injection and independent review are still required. The lifetime of restoring a newer context after discarding its versions through an older context is not certified.
+## Scope and remaining release gates
 
-Decision: HOLD. This checkpoint makes recovered source and limitations durable; it is not ready for production merge or binary replacement.
+Independent source review found no further concrete blocker in the tested snapshot normal, recoverable calloc/realloc, and overlap-preflight paths. This is not proof of global OOM safety: general uc_mem_map publishes a region before index registration, and other compatibility-allocation callers retain their existing behavior. Restoring a newer memory context after its versions were discarded by an older context is not certified. Non-ARM target builds, broad performance/RSS non-regression, a complete JUnit run and leak checking remain outside this checkpoint.
 
-## Follow-up: recoverable FlatView allocation failure
-
-The recovered candidate now allocates a replacement ranges buffer before releasing the old one. If that allocation fails, the old ranges/count/dispatcher stay untouched. A failed context restore also restores the previous snapshot level and executes the existing JIT-state restoration path.
-
-Fresh linker-wrapped calloc failure tests on ARM32 and ARM64 pass for both growing an existing saved context and restoring a larger context into a smaller current view. They check the exact NOMEM return, unchanged current visibility/snapshot level, preserved saved context, and successful retry. Native suites and nested/region tests were rerun successfully after this change. This narrowly validates those allocation exits, not all allocations or sanitizers.
-
-Important source correction: glib_compat.c contains disabled allocator examples. The active gmem.c g_realloc returns NULL and frees the old allocation on a failed nonzero realloc. Therefore mem_map failure is a real remaining issue, not an abort-only path. It and overlap partial-state recovery still need resolution. HOLD remains.
+Status: validated within the stated correctness scope, held from production release pending broader gates. Tests, fixtures, binaries and raw logs remain outside Git. No native replacement or main-branch merge is performed.
