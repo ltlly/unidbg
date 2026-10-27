@@ -1,0 +1,12 @@
+--- a/qemu/softmmu/memory.c
++++ b/qemu/softmmu/memory.c
+@@ -273,7 +273,8 @@
+     memory_region_del_subregion(uc->system_memory, mr);
+     g_array_append_val(uc->unmapped_regions, mr);
+     memory_region_remove_mapped_block(uc, mr_block, false);
+-    uc->memory_region_update_pending = true;
++    /* del_subregion already published the root topology; the bookkeeping
++     * above changes no rendered region. Keep the transaction balanced. */
+     memory_region_transaction_commit(uc->system_memory);
+     /* dirty hack to save the snapshot level */
+     mr->container = (void *)(intptr_t)uc->snapshot_level;
