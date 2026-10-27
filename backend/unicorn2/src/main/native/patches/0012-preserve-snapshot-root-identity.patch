@@ -1,6 +1,19 @@
 --- a/uc.c
 +++ b/uc.c
-@@ -3017,7 +3017,7 @@
+@@ -2583,9 +2583,12 @@
+     uc_err ret;
+ 
+     if (uc->context_content & UC_CTL_CONTEXT_MEMORY) {
++        int previous_snapshot_level = uc->snapshot_level;
+         uc->snapshot_level = context->snapshot_level;
+         if (!uc->flatview_copy(uc, uc->address_space_memory.current_map,
+                                context->fv, true)) {
++            uc->snapshot_level = previous_snapshot_level;
++            restore_jit_state(uc);
+             return UC_ERR_NOMEM;
+         }
+         ret = uc_restore_latest_snapshot(uc);
+@@ -3017,7 +3020,7 @@
  
  static uc_err uc_restore_latest_snapshot(struct uc_struct *uc)
  {
@@ -9,7 +22,7 @@
      int level;
  
      QTAILQ_FOREACH_SAFE(subregion, &uc->system_memory->subregions,
-@@ -3032,27 +3032,30 @@
+@@ -3032,27 +3035,30 @@
  
      for (size_t i = uc->unmapped_regions->len; i-- > 0;) {
          mr = g_array_index(uc->unmapped_regions, MemoryRegion *, i);
@@ -104,3 +117,22 @@
      uc->memory_region_update_pending = true;
      memory_region_transaction_commit(uc->system_memory);
      /* dirty hack to save the snapshot level */
+@@ -927,13 +925,14 @@
+ bool flatview_copy(struct uc_struct *uc, FlatView *dst, FlatView *src, bool update_dispatcher)
+ {
+     if (!dst->ranges || !dst->nr_allocated || dst->nr_allocated < src->nr) {
++        FlatRange *ranges = calloc(src->nr_allocated, sizeof(*dst->ranges));
++        if (!ranges) {
++            return false;
++        }
+         if (dst->ranges && dst->nr_allocated) {
+             free(dst->ranges);
+         }
+-        dst->ranges = calloc(src->nr_allocated, sizeof(*dst->ranges));
+-        if (!dst->ranges) {
+-            return false;
+-        }
++        dst->ranges = ranges;
+         dst->nr_allocated = src->nr_allocated;
+     }
+     memcpy(dst->ranges, src->ranges, src->nr*sizeof(*dst->ranges));
