@@ -1,0 +1,14 @@
+--- a/qemu/tcg/tcg.c
++++ b/qemu/tcg/tcg.c
+@@ -1004,8 +1004,9 @@
+     int idx, k;
+ 
+     k = type + (temp_local ? TCG_TYPE_COUNT : 0);
+-    idx = find_first_bit(s->free_temps[k].l, TCG_MAX_TEMPS);
+-    if (idx < TCG_MAX_TEMPS) {
++    /* Free bits only refer to temps allocated since tcg_func_start(). */
++    idx = find_first_bit(s->free_temps[k].l, s->nb_temps);
++    if (idx < s->nb_temps) {
+         /* There is already an available temp with the right type.  */
+         clear_bit(idx, s->free_temps[k].l);
+ 
