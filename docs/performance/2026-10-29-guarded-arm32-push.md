@@ -1,6 +1,6 @@
 # Guarded ARM32 PUSH batching: experimental candidate
 
-Status: correctness screens described below passed; fixed performance screen is running. This is not accepted for master or the upstream PR. No speedup is claimed.
+Status: the fixed 256-process screen completed and failed acceptance. HOLD: do not merge into master or the upstream PR. Focused correctness checks below passed, but reliable performance benefit was not established.
 
 ## Matched source and scope
 
@@ -33,3 +33,28 @@ These focused checks are not exhaustive proof, cross-platform validation, a full
 ## Fixed performance gate
 
 Four blocks ABBA/BAAB/ABBA/BAAB, 128 cold and 128 long independent JVMs across eight families. Target six-ARM32-family geometric long-work ratio must be at least 1.05, with favorable target-suite direction in each block. Every family long/cold mean time growth must be at most 3%; mean peak RSS growth at most 2%. Runtime content, actual native hash, JVM heap, sample order and CPU affinity are pinned. No data-dependent extra repeats. Any gate failure or unresolved correctness risk holds acceptance. Overall 20x is not achieved or claimed.
+
+## Completed screen (2026-10-29)
+
+All 128 cold and 128 long rows completed with exit 0, planned order, correct actual-native witnesses and unchanged runtime manifest. Independent recalculation matched the analysis. The target six-family geometric long-work speed ratio was **1.018117**, below 1.05, with blocks **0.947284 / 0.848467 / 1.169124 / 1.143445**. The first two blocks were unfavorable. Eight-family cold-wall ratio was 0.944597; long-wall 1.005928; long-work 1.017469.
+
+Ratios below are baseline time / candidate time (higher is faster); RSS is candidate / baseline (lower is smaller). These descriptive observations do not establish causation or equivalence.
+
+| Family | Long work ratio | Cold wall ratio | Long RSS ratio |
+|---|---:|---:|---:|
+| map2 | 1.034333 | 0.879456 | 1.004832 |
+| map100 | 0.951685 | 1.108790 | 1.008652 |
+| sg4k | 1.039042 | 1.036540 | 0.997737 |
+| sg64k | 1.117070 | 0.974904 | 1.003374 |
+| tt | 1.046877 | 0.953043 | 1.001423 |
+| jna64 | 1.008580 | 0.929612 | 1.005377 |
+| tg32 | 0.931158 | 0.813211 | 0.998718 |
+| tg64 | 1.022520 | 0.892777 | 1.002018 |
+
+All per-family RSS guards passed. Cold-wall guards failed for map2, SG64K, TT, JNA64, TG32 and TG64; long-wall/work guards failed for map100 and TG32. The SG64K cold arithmetic-mean growth of 3.0071% alone was marginal, but multiple other failures are not dependent on that borderline result.
+
+An independent method audit noticed that the plan's per-family “mean” did not name arithmetic versus geometric. A note recorded at 16:47 UTC, before final analysis, conservatively required both to pass the original limits; no runs or thresholds were relaxed. The existing target-suite definition remained geometric. Both summaries and all unfavorable blocks were retained.
+
+Block heterogeneity was substantial, including the unchanged AArch64 control paths. For example TG32 work ratios ranged from 0.524614 to 1.652682. Do not attribute all observed regressions to this patch or select only favorable blocks. No extra data-dependent performance repeats were added. A separate subsequent CPU-stack diagnostic is for explaining costs only and cannot repair this failed acceptance screen.
+
+Method limits: the parent process records affinity and Java inherits it normally; Java does not self-report affinity. The 2278-file runtime manifest pins actual artifacts. Production Java/pom files matched the merged source tree, and a preceding Maven compile log supports provenance, but this is not an independent reproducible-build proof or a claim that full Maven tests passed. Method scripts were retained and hash-checked separately.
