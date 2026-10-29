@@ -1,0 +1,74 @@
+--- a/qemu/accel/tcg/cputlb.c
++++ b/qemu/accel/tcg/cputlb.c
+@@ -2835,3 +2835,43 @@
+     TCGMemOpIdx oi = make_memop_idx(MO_TEQ, cpu_mmu_index(env, true));
+     return full_ldq_code(env, addr, oi, 0);
+ }
++
++#if defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++/* DC ZVA may retain NOTDIRTY even on non-executable RAM, because the raw
++ * code tag comes from the CPU MMU permissions rather than Unicorn's MR.
++ * In this narrow case each byte's notdirty_write is a no-op. Keep the tag:
++ * later hook registration and permission changes still need the slow path. */
++bool uc_try_dc_zva_ram_aarch64(CPUArchState *env, target_ulong addr,
++                              unsigned size, unsigned mmu_idx)
++{
++    struct uc_struct *uc = env->uc;
++    CPUTLBEntry *entry;
++    CPUIOTLBEntry *io;
++    MemoryRegion *mr;
++
++    if (uc->snapshot_level || HOOK_EXISTS(uc, UC_HOOK_MEM_WRITE) ||
++        uc->stop_request || uc->invalid_error != UC_ERR_OK ||
++        !size || size > TARGET_PAGE_SIZE ||
++        (addr & ~TARGET_PAGE_MASK) > TARGET_PAGE_SIZE - size) {
++        return false;
++    }
++    entry = tlb_entry(env, mmu_idx, addr);
++    if (tlb_addr_write(entry) != ((addr & TARGET_PAGE_MASK) | TLB_NOTDIRTY) ||
++        entry->addr_code == (target_ulong)-1) {
++        return false;
++    }
++    io = &env_tlb(env)->d[mmu_idx].iotlb[tlb_index(env, mmu_idx, addr)];
++    if (io->ram_section_index == UINT32_MAX) {
++        return false;
++    }
++    mr = memory_region_from_cached_ram_section(uc, io->ram_section_index);
++    if (!mr || !mr->ram || mr->readonly || !(mr->perms & UC_PROT_WRITE) ||
++        (mr->perms & UC_PROT_EXEC)) {
++        return false;
++    }
++    /* A cached RAM section covers the entire physical page. No callbacks,
++     * SMC invalidation or dirty-tag changes occur in the replaced byte loop. */
++    memset((void *)((uintptr_t)addr + entry->addend), 0, size);
++    return true;
++}
++#endif
+--- a/qemu/target/arm/helper-a64.c
++++ b/qemu/target/arm/helper-a64.c
+@@ -1167,6 +1167,13 @@
+      *  + we would have to deal with the map returning NULL because the
+      *    bounce buffer was in use
+      */
++#if defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++    /* Preserve both original probe rounds and their fault/callback behavior.
++     * Only coalesce the final loop when every byte has no ancillary effects. */
++    if (uc_try_dc_zva_ram_aarch64(env, vaddr, blocklen, mmu_idx)) {
++        return;
++    }
++#endif
+     for (i = 0; i < blocklen; i++) {
+         helper_ret_stb_mmu(env, vaddr + i, 0, oi, GETPC());
+     }
+--- a/qemu/include/exec/cpu_ldst.h
++++ b/qemu/include/exec/cpu_ldst.h
+@@ -186,4 +186,9 @@
+  */
+ bool tlb_vaddr_to_paddr(CPUArchState *env, abi_ptr addr,
+ 		        MMUAccessType access_type, int mmu_idx, target_ulong *paddr);
++#if defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++bool uc_try_dc_zva_ram_aarch64(CPUArchState *env, target_ulong addr,
++                              unsigned size, unsigned mmu_idx);
++#endif
++
+ #endif /* CPU_LDST_H */
