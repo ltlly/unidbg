@@ -1,0 +1,284 @@
+--- a/uc.c
++++ b/uc.c
+@@ -1337,35 +1337,49 @@
+ }
+ 
+ // common setup/error checking shared between uc_mem_map and uc_mem_map_ptr
+-static uc_err mem_map(uc_engine *uc, MemoryRegion *block)
+-{
+-
++static uc_err mem_map_reserve(uc_engine *uc, size_t required)
++{
++    size_t capacity;
+     MemoryRegion **regions;
+-    int pos;
+-
+-    if (block == NULL) {
++    if (required == 0) {
++        return UC_ERR_OK;
++    }
++    if (required > INT_MAX || required > SIZE_MAX - (MEM_BLOCK_INCR - 1)) {
+         return UC_ERR_NOMEM;
+     }
+-
+-    if ((uc->mapped_block_count & (MEM_BLOCK_INCR - 1)) == 0) { // time to grow
+-        regions = (MemoryRegion **)g_realloc(
+-            uc->mapped_blocks,
+-            sizeof(MemoryRegion *) * (uc->mapped_block_count + MEM_BLOCK_INCR));
+-        if (regions == NULL) {
+-            return UC_ERR_NOMEM;
+-        }
+-        uc->mapped_blocks = regions;
+-    }
+-
+-    pos = bsearch_mapped_blocks(uc, block->addr);
+-
+-    // shift the array right to give space for the new pointer
++    capacity = (required + MEM_BLOCK_INCR - 1) & ~((size_t)MEM_BLOCK_INCR - 1);
++    if (capacity > SIZE_MAX / sizeof(*regions)) {
++        return UC_ERR_NOMEM;
++    }
++    regions = realloc(uc->mapped_blocks, capacity * sizeof(*regions));
++    if (!regions) {
++        return UC_ERR_NOMEM;
++    }
++    uc->mapped_blocks = regions;
++    return UC_ERR_OK;
++}
++
++static void mem_map_insert(uc_engine *uc, MemoryRegion *block)
++{
++    int pos = bsearch_mapped_blocks(uc, block->addr);
+     memmove(&uc->mapped_blocks[pos + 1], &uc->mapped_blocks[pos],
+             sizeof(MemoryRegion *) * (uc->mapped_block_count - pos));
+-
+     uc->mapped_blocks[pos] = block;
+     uc->mapped_block_count++;
+-
++}
++
++static uc_err mem_map(uc_engine *uc, MemoryRegion *block)
++{
++    if (block == NULL || uc->mapped_block_count >= INT_MAX) {
++        return UC_ERR_NOMEM;
++    }
++    if ((uc->mapped_block_count & (MEM_BLOCK_INCR - 1)) == 0) {
++        uc_err err = mem_map_reserve(uc, (size_t)uc->mapped_block_count + 1);
++        if (err != UC_ERR_OK) {
++            return err;
++        }
++    }
++    mem_map_insert(uc, block);
+     return UC_ERR_OK;
+ }
+ 
+@@ -2576,6 +2590,73 @@
+     return UC_ERR_OK;
+ }
+ 
++/* Match the shallow filtering performed by uc_restore_latest_snapshot. */
++static bool snapshot_root_survives(MemoryRegion *mr, int level)
++{
++    MemoryRegion *child;
++    if (mr->priority >= level) {
++        return false;
++    }
++    if (mr->terminates) {
++        return true;
++    }
++    QTAILQ_FOREACH(child, &mr->subregions, subregions_link) {
++        if (child->priority < level) {
++            return true;
++        }
++    }
++    return false;
++}
++
++static bool snapshot_roots_overlap(MemoryRegion *a, MemoryRegion *b)
++{
++    /* A legal nonempty mapping may end exactly at 2^64 (end == 0). */
++    return a->addr <= b->end - 1 && b->addr <= a->end - 1;
++}
++
++static uc_err snapshot_restore_preflight(uc_engine *uc, int level)
++{
++    size_t first = uc->unmapped_regions->len;
++    size_t required = uc->mapped_block_count;
++    MemoryRegion *root, *other;
++    while (first > 0) {
++        root = g_array_index(uc->unmapped_regions, MemoryRegion *, first - 1);
++        if ((intptr_t)root->container < level) {
++            break;
++        }
++        first--;
++    }
++    for (size_t i = first; i < uc->unmapped_regions->len; i++) {
++        root = g_array_index(uc->unmapped_regions, MemoryRegion *, i);
++        if (!snapshot_root_survives(root, level)) {
++            continue;
++        }
++        QTAILQ_FOREACH(other, &uc->system_memory->subregions, subregions_link) {
++            if (snapshot_root_survives(other, level) &&
++                snapshot_roots_overlap(root, other)) {
++                return UC_ERR_MAP;
++            }
++        }
++        for (size_t j = first; j < i; j++) {
++            other = g_array_index(uc->unmapped_regions, MemoryRegion *, j);
++            if (snapshot_root_survives(other, level) &&
++                snapshot_roots_overlap(root, other)) {
++                return UC_ERR_MAP;
++            }
++        }
++        if (required == SIZE_MAX) {
++            return UC_ERR_NOMEM;
++        }
++        required++;
++    }
++    /* No insertion needs no additional capacity. */
++    if (required == uc->mapped_block_count) {
++        return UC_ERR_OK;
++    }
++    /* Reserve before publishing a saved view or filtering any roots. */
++    return mem_map_reserve(uc, required);
++}
++
+ UNICORN_EXPORT
+ uc_err uc_context_restore(uc_engine *uc, uc_context *context)
+ {
+@@ -2583,9 +2664,17 @@
+     uc_err ret;
+ 
+     if (uc->context_content & UC_CTL_CONTEXT_MEMORY) {
++        int previous_snapshot_level = uc->snapshot_level;
++        ret = snapshot_restore_preflight(uc, context->snapshot_level);
++        if (ret != UC_ERR_OK) {
++            restore_jit_state(uc);
++            return ret;
++        }
+         uc->snapshot_level = context->snapshot_level;
+         if (!uc->flatview_copy(uc, uc->address_space_memory.current_map,
+                                context->fv, true)) {
++            uc->snapshot_level = previous_snapshot_level;
++            restore_jit_state(uc);
+             return UC_ERR_NOMEM;
+         }
+         ret = uc_restore_latest_snapshot(uc);
+@@ -3017,7 +3106,7 @@
+ 
+ static uc_err uc_restore_latest_snapshot(struct uc_struct *uc)
+ {
+-    MemoryRegion *subregion, *subregion_next, *mr, *initial_mr;
++    MemoryRegion *subregion, *subregion_next, *mr;
+     int level;
+ 
+     QTAILQ_FOREACH_SAFE(subregion, &uc->system_memory->subregions,
+@@ -3032,27 +3121,23 @@
+ 
+     for (size_t i = uc->unmapped_regions->len; i-- > 0;) {
+         mr = g_array_index(uc->unmapped_regions, MemoryRegion *, i);
+-        // same dirty hack as in memory_moveout see qemu/softmmu/memory.c
+-        initial_mr = QTAILQ_FIRST(&mr->subregions);
+-        if (!initial_mr) {
+-            initial_mr = mr;
+-        }
+-        /* same dirty hack as in memory_moveout see qemu/softmmu/memory.c */
++        /* Detached roots retain their unmap level until selected. */
+         level = (intptr_t)mr->container;
+-        mr->container = NULL;
+-
+         if (level < uc->snapshot_level) {
+             break;
+         }
+-        if (memory_overlap(uc, mr->addr, int128_get64(mr->size))) {
+-            return UC_ERR_MAP;
+-        }
+-        uc->memory_movein(uc, mr);
++        mr->container = NULL;
++        /* Remove newer layers before exposing the restored topology. */
+         uc->memory_filter_subregions(mr, uc->snapshot_level);
+-        if (initial_mr != mr && QTAILQ_EMPTY(&mr->subregions)) {
+-            uc->memory_unmap(uc, subregion);
+-        }
+-        mem_map(uc, initial_mr);
++        if (mr->priority >= uc->snapshot_level ||
++            (!mr->terminates && QTAILQ_EMPTY(&mr->subregions))) {
++            mr->destructor(mr);
++            g_free(mr);
++        } else {
++            /* Capacity and non-overlap were checked before mutation. */
++            mem_map_insert(uc, mr);
++            uc->memory_movein(uc, mr);
++        }
+         g_array_remove_range(uc->unmapped_regions, i, 1);
+     }
+     uc->snapshot_level--;
+--- a/qemu/softmmu/memory.c
++++ b/qemu/softmmu/memory.c
+@@ -89,9 +89,18 @@
+     MemoryRegion *container = g_new(MemoryRegion, 1);
+     memory_region_init(uc, container, int128_get64(current->size));
+     container->destructor = memory_region_destructor_container;
++    container->perms = current->perms;
++    int priority = current->priority;
++    /* Index complete guest mappings by their absolute root, not COW children. */
++    for (size_t i = 0; i < uc->mapped_block_count; i++) {
++        if (uc->mapped_blocks[i] == current) {
++            uc->mapped_blocks[i] = container;
++            break;
++        }
++    }
+     memory_region_del_subregion(uc->system_memory, current);
+     memory_region_add_subregion_overlap(container, 0, current, current->priority);
+-    memory_region_add_subregion(uc->system_memory, addr, container);
++    memory_region_add_subregion_overlap(uc->system_memory, addr, container, priority);
+ }
+ 
+ MemoryRegion *memory_cow(struct uc_struct *uc, MemoryRegion *current, hwaddr begin, size_t size)
+@@ -246,18 +255,7 @@
+ void memory_moveout(struct uc_struct *uc, MemoryRegion *mr)
+ {
+     hwaddr addr;
+-    /* A bit dirty, but it works.
+-     * The first subregion will be the one with the smalest priority.
+-     * In case of CoW this will always be the region which is mapped initial and later be moved in the subregion of the container.
+-     * The initial subregion is the one stored in mapped_blocks
+-     * Because CoW is done after the snapshot level is increased there is only on subregion with 
+-     */
+     memory_region_transaction_begin();
+-    MemoryRegion *mr_block = QTAILQ_FIRST(&mr->subregions);
+-
+-    if (!mr_block) {
+-        mr_block = mr;
+-    }
+ 
+     if (uc->cpu) {
+         // We also need to remove all tb cache
+@@ -272,7 +270,7 @@
+ 
+     memory_region_del_subregion(uc->system_memory, mr);
+     g_array_append_val(uc->unmapped_regions, mr);
+-    memory_region_remove_mapped_block(uc, mr_block, false);
++    memory_region_remove_mapped_block(uc, mr, false);
+     uc->memory_region_update_pending = true;
+     memory_region_transaction_commit(uc->system_memory);
+     /* dirty hack to save the snapshot level */
+@@ -927,13 +925,14 @@
+ bool flatview_copy(struct uc_struct *uc, FlatView *dst, FlatView *src, bool update_dispatcher)
+ {
+     if (!dst->ranges || !dst->nr_allocated || dst->nr_allocated < src->nr) {
++        FlatRange *ranges = calloc(src->nr_allocated, sizeof(*dst->ranges));
++        if (!ranges) {
++            return false;
++        }
+         if (dst->ranges && dst->nr_allocated) {
+             free(dst->ranges);
+         }
+-        dst->ranges = calloc(src->nr_allocated, sizeof(*dst->ranges));
+-        if (!dst->ranges) {
+-            return false;
+-        }
++        dst->ranges = ranges;
+         dst->nr_allocated = src->nr_allocated;
+     }
+     memcpy(dst->ranges, src->ranges, src->nr*sizeof(*dst->ranges));

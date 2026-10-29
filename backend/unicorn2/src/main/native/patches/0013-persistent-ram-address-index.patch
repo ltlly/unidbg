@@ -1,0 +1,181 @@
+--- a/qemu/exec.c
++++ b/qemu/exec.c
+@@ -956,6 +956,52 @@
+     register_subpage(uc, fv, &remain);
+ }
+ 
++/* Keep a second ordering without changing the size-sorted primary list.
++ * Only successful RAMBlock publication and actual destruction change membership.
++ * Snapshot moveout/restore must not roll this live-block index back. */
++static void ram_address_insert(struct uc_struct *uc, RAMBlock *block)
++{
++    RAMBlock *next = uc->ram_list.addr_head;
++    RAMBlock *prev = NULL;
++    if (uc->ram_list.addr_tail &&
++        uc->ram_list.addr_tail->offset <= block->offset) {
++        prev = uc->ram_list.addr_tail;
++        next = NULL;
++    } else {
++        while (next && next->offset <= block->offset) {
++            prev = next;
++            next = next->addr_next;
++        }
++    }
++    block->addr_prev = prev;
++    block->addr_next = next;
++    if (prev) {
++        prev->addr_next = block;
++    } else {
++        uc->ram_list.addr_head = block;
++    }
++    if (next) {
++        next->addr_prev = block;
++    } else {
++        uc->ram_list.addr_tail = block;
++    }
++}
++
++static void ram_address_remove(struct uc_struct *uc, RAMBlock *block)
++{
++    if (block->addr_prev) {
++        block->addr_prev->addr_next = block->addr_next;
++    } else {
++        uc->ram_list.addr_head = block->addr_next;
++    }
++    if (block->addr_next) {
++        block->addr_next->addr_prev = block->addr_prev;
++    } else {
++        uc->ram_list.addr_tail = block->addr_prev;
++    }
++    block->addr_prev = block->addr_next = NULL;
++}
++
+ static ram_addr_t find_ram_offset_last(struct uc_struct *uc, ram_addr_t size)
+ {
+     ram_addr_t result = 0;
+@@ -978,7 +1024,7 @@
+  * dirty bitmaps.
+  * Called with the ramlist lock held.
+  */
+-static ram_addr_t find_ram_offset(struct uc_struct *uc, ram_addr_t size)
++static ram_addr_t find_ram_offset_slow(struct uc_struct *uc, ram_addr_t size)
+ {
+     RAMBlock *block, *next_block;
+     ram_addr_t offset = RAM_ADDR_MAX, mingap = RAM_ADDR_MAX;
+@@ -1041,6 +1087,67 @@
+     return offset;
+ }
+ 
++/* Geometric validation is not a repair for broken membership: add/free must
++ * keep exactly the same live blocks in both lists. The original scan remains
++ * the fallback for overflow, overlapping identities or a missing index. */
++static ram_addr_t find_ram_offset(struct uc_struct *uc, ram_addr_t size)
++{
++    RAMBlock *block, *prev = NULL, *next;
++    ram_addr_t prior_end = 0, mingap = RAM_ADDR_MAX;
++    ram_addr_t alignment = (ram_addr_t)BITS_PER_LONG << TARGET_PAGE_BITS;
++
++    assert(size != 0);
++    if (!uc->ram_list.freed || QLIST_EMPTY_RCU(&uc->ram_list.blocks) ||
++        !uc->ram_list.addr_head || !uc->ram_list.addr_tail) {
++        return find_ram_offset_slow(uc, size);
++    }
++    for (block = uc->ram_list.addr_head; block; block = block->addr_next) {
++        if (block->addr_prev != prev || !block->max_length ||
++            block->max_length > RAM_ADDR_MAX - block->offset ||
++            (prev && block->offset < prior_end)) {
++            return find_ram_offset_slow(uc, size);
++        }
++        prior_end = block->offset + block->max_length;
++        prev = block;
++    }
++    if (prev != uc->ram_list.addr_tail) {
++        return find_ram_offset_slow(uc, size);
++    }
++
++    next = uc->ram_list.addr_head;
++    prev = NULL;
++    for (block = uc->ram_list.addr_head; block; block = block->addr_next) {
++        ram_addr_t candidate = block->offset + block->max_length;
++        ram_addr_t limit;
++        block->gap_scratch = 0;
++        if (candidate > RAM_ADDR_MAX - (alignment - 1)) {
++            continue;
++        }
++        candidate = ROUND_UP(candidate, alignment);
++        while (next && next->offset < candidate) {
++            prev = next;
++            next = next->addr_next;
++        }
++        if (prev && candidate - prev->offset < prev->max_length) {
++            continue;
++        }
++        limit = next ? next->offset : RAM_ADDR_MAX;
++        block->gap_scratch = limit - candidate;
++        if (block->gap_scratch >= size && block->gap_scratch < mingap) {
++            mingap = block->gap_scratch;
++        }
++    }
++    if (mingap != RAM_ADDR_MAX) {
++        /* Preserve the original size-list tie order, not address order. */
++        RAMBLOCK_FOREACH(block) {
++            if (block->gap_scratch >= size && block->gap_scratch == mingap) {
++                return ROUND_UP(block->offset + block->max_length, alignment);
++            }
++        }
++    }
++    return find_ram_offset_slow(uc, size);
++}
++
+ void *qemu_ram_get_host_addr(RAMBlock *rb)
+ {
+     return rb->host;
+@@ -1170,6 +1277,7 @@
+         QLIST_INSERT_HEAD_RCU(&uc->ram_list.blocks, new_block, next);
+         uc->ram_list.last_block = new_block;
+     }
++    ram_address_insert(uc, new_block);
+     uc->ram_list.mru_block = NULL;
+ 
+     /* Write list before version */
+@@ -1246,6 +1354,7 @@
+     //    ram_block_notify_remove(block->host, block->max_length);
+     //}
+ 
++    ram_address_remove(uc, block);
+     QLIST_REMOVE_RCU(block, next);
+     uc->ram_list.mru_block = NULL;
+     uc->ram_list.freed = true;
+--- a/include/qemu.h
++++ b/include/qemu.h
+@@ -30,6 +30,10 @@
+     /* RCU-enabled, writes protected by the ramlist lock */
+     QLIST_ENTRY(RAMBlock) next;
+     size_t page_size;
++    /* All live blocks, ordered by internal RAM identity; not snapshot state. */
++    struct RAMBlock *addr_prev;
++    struct RAMBlock *addr_next;
++    ram_addr_t gap_scratch;
+ };
+ 
+ typedef struct {
+@@ -45,6 +49,8 @@
+     RAMBlock *mru_block;
+     RAMBlock *last_block;
+     QLIST_HEAD(, RAMBlock) blocks;
++    RAMBlock *addr_head;
++    RAMBlock *addr_tail;
+ } RAMList;
+ 
+ #endif
+--- a/uc.c
++++ b/uc.c
+@@ -323,6 +323,8 @@
+ 
+         // uc->ram_list = { .blocks = QLIST_HEAD_INITIALIZER(ram_list.blocks) };
+         QLIST_INIT(&uc->ram_list.blocks);
++        uc->ram_list.addr_head = NULL;
++        uc->ram_list.addr_tail = NULL;
+ 
+         QTAILQ_INIT(&uc->memory_listeners);
+ 
