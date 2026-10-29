@@ -1,6 +1,6 @@
 # Persistent RAM-address ordering: experimental source candidate
 
-Status: focused correctness checks passed; fixed performance screen not yet complete. This is source-only experimental work, not accepted for master or upstream PR #792. Overall 20x is not achieved.
+Status: HOLD. The fixed screen terminated after a candidate-labelled long-work JVM exceeded the original 120-second timeout. The cause is unresolved; do not merge into master or upstream PR #792. Focused checks passed, but the complete performance/correctness acceptance is not established. Overall 20x is not achieved.
 
 ## Different mechanism from prior held temporary indexes
 
@@ -40,3 +40,11 @@ Private test code, raw logs, counters and new binary artifacts remain outside Gi
 ## Fixed performance gate
 
 Four ABBA/BAAB/ABBA/BAAB blocks, 128 cold plus 128 long independent JVMs across eight families. The geometric long-work ratio across map2/map100 must be at least 1.05, with favorable target-suite direction in every block. Every family's cold process time and long process/work time must stay within +3%, and peak RSS within +2%, using both arithmetic and geometric summaries. Actual native hash, classpath artifacts, input fixtures, JVM heap, order and CPU affinity are pinned. No extra data-dependent repeats, discarded adverse blocks or pooling with diagnostics.
+
+## Stopped screen and unresolved timeout
+
+The 128 cold JVMs completed. In long block0/map2, the first A and B JVMs completed; the second B (position2) exceeded the original 120-second subprocess timeout. The wrapper killed that test child, returned an error and stopped the remaining plan. The failure record and stderr are retained. The failed process did not reach its final native witness or complete resource record; its fixed-prefix/argument selection identified the intended candidate. Do not call 128+3 records 131 passed runs or calculate a long-suite speedup from the two completed observations. No failed row was replaced and the screen was not resumed.
+
+Source review did not find a definite cause. Valid address geometry makes the validated forward scan bounded, but a previously corrupted list or an unrelated runtime stall cannot be excluded without the failing stack. This is not grounds to dismiss the timeout as noise.
+
+A separate fixed two-process CPU-observer diagnostic completed on both arms with matching native witnesses and did not reproduce the timeout. Profiled timings are not acceptance evidence and do not explain or erase the failure. A bounded unmodified-workload reproduction batch is collecting own-child CPU/state/native observations and will capture stacks if the original timeout threshold is crossed. Its outcome will be recorded separately; no favorable run can restore the stopped screen's acceptance.
