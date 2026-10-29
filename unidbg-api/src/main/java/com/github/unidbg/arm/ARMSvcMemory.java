@@ -107,11 +107,49 @@ public class ARMSvcMemory implements SvcMemory {
     private int thumbSvcNumber = 0;
     private int armSvcNumber = 0xff;
 
-    private final Map<Integer, Svc> svcMap = new HashMap<>();
+    private static final Svc[] EMPTY_SERVICES = new Svc[0];
+    private static final int INDEXED_SERVICE_LIMIT = 0x10000;
+    private Svc[] armServices = EMPTY_SERVICES;
+    private Svc[] lowServices = EMPTY_SERVICES;
+    private Map<Integer, Svc> otherServices;
 
     @Override
     public Svc getSvc(int svcNumber) {
-        return svcMap.get(svcNumber);
+        if (svcNumber >= 0x100) {
+            int index = svcNumber - 0x100;
+            if (index < armServices.length) {
+                return armServices[index];
+            }
+        } else if (svcNumber >= 0 && svcNumber < lowServices.length) {
+            return lowServices[svcNumber];
+        }
+        return otherServices == null ? null : otherServices.get(svcNumber);
+    }
+
+    private Svc putSvc(int number, Svc svc) {
+        if (number >= 0 && number < INDEXED_SERVICE_LIMIT) {
+            // Index by numeric ID, not instruction type: the two counters can collide.
+            boolean low = number < 0x100;
+            int index = low ? number : number - 0x100;
+            Svc[] services = low ? lowServices : armServices;
+            if (index >= services.length) {
+                int limit = low ? 0x100 : INDEXED_SERVICE_LIMIT - 0x100;
+                int capacity = Math.min(limit, Math.max(index + 1, Math.max(16, services.length * 2)));
+                services = Arrays.copyOf(services, capacity);
+                if (low) {
+                    lowServices = services;
+                } else {
+                    armServices = services;
+                }
+            }
+            Svc previous = services[index];
+            services[index] = svc;
+            return previous;
+        }
+        if (otherServices == null) {
+            otherServices = new HashMap<>();
+        }
+        return otherServices.put(number, svc);
     }
 
     @Override
@@ -141,7 +179,7 @@ public class ARMSvcMemory implements SvcMemory {
         } else {
             throw new IllegalStateException("svc=" + svc);
         }
-        if (svcMap.put(number, svc) != null) {
+        if (putSvc(number, svc) != null) {
             throw new IllegalStateException();
         }
         return svc.onRegister(this, number);
