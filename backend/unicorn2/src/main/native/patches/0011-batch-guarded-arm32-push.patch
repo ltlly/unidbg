@@ -1,0 +1,141 @@
+--- a/qemu/target/arm/translate.c
++++ b/qemu/target/arm/translate.c
+@@ -10346,6 +10346,9 @@
+     int i, j, n, list, mem_idx;
+     bool user = a->u;
+     TCGv_i32 addr, tmp, tmp2;
++#if defined(TARGET_ARM) && !defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++    TCGLabel *push_done = NULL;
++#endif
+ 
+     if (user) {
+         /* STM (user) */
+@@ -10366,6 +10369,32 @@
+     addr = op_addr_block_pre(s, a, n);
+     mem_idx = get_mem_index(s);
+ 
++#if defined(TARGET_ARM) && !defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++    if (a->rn == 13 && a->b && !a->i && a->w && !a->u && n >= 2 &&
++        !(list & ((1 << 13) | (1 << 15))) &&
++        !arm_dc_feature(s, ARM_FEATURE_M) && s->condexec_mask == 0 &&
++        !s->uc->no_exit_request && s->be_data == MO_LE &&
++        !(s->uc->mode & UC_MODE_ARMBE8)) {
++        TCGLabel *fallback = gen_new_label(tcg_ctx);
++        TCGv_i32 saved_addr = tcg_temp_local_new_i32(tcg_ctx);
++        TCGv_i32 handled = tcg_temp_new_i32(tcg_ctx);
++        TCGv_i32 mask = tcg_const_i32(tcg_ctx, list);
++        TCGv_i32 mmu = tcg_const_i32(tcg_ctx, mem_idx);
++        push_done = gen_new_label(tcg_ctx);
++        tcg_gen_mov_i32(tcg_ctx, saved_addr, addr);
++        tcg_temp_free_i32(tcg_ctx, addr);
++        addr = saved_addr;
++        gen_helper_push_try_arm(tcg_ctx, handled, tcg_ctx->cpu_env, addr, mask, mmu);
++        tcg_temp_free_i32(tcg_ctx, mmu);
++        tcg_temp_free_i32(tcg_ctx, mask);
++        tcg_gen_brcondi_i32(tcg_ctx, TCG_COND_EQ, handled, 0, fallback);
++        tcg_temp_free_i32(tcg_ctx, handled);
++        tcg_gen_addi_i32(tcg_ctx, addr, addr, (n - 1) * 4);
++        tcg_gen_br(tcg_ctx, push_done);
++        gen_set_label(tcg_ctx, fallback);
++    }
++#endif
++
+     for (i = j = 0; i < 16; i++) {
+         if (!(list & (1 << i))) {
+             continue;
+@@ -10388,6 +10417,11 @@
+         }
+     }
+ 
++#if defined(TARGET_ARM) && !defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++    if (push_done) {
++        gen_set_label(tcg_ctx, push_done);
++    }
++#endif
+     op_addr_block_post(s, a, addr, n);
+     return true;
+ }
+--- a/qemu/target/arm/helper.h
++++ b/qemu/target/arm/helper.h
+@@ -704,3 +704,7 @@
+ #include "helper-a64.h"
+ #include "helper-sve.h"
+ #endif
++
++#if defined(TARGET_ARM) && !defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++DEF_HELPER_4(push_try_arm, i32, env, i32, i32, i32)
++#endif
+--- a/qemu/accel/tcg/cputlb.c
++++ b/qemu/accel/tcg/cputlb.c
+@@ -2835,3 +2835,71 @@
+     TCGMemOpIdx oi = make_memop_idx(MO_TEQ, cpu_mmu_index(env, true));
+     return full_ldq_code(env, addr, oi, 0);
+ }
++
++#if defined(TARGET_ARM) && !defined(TARGET_AARCH64) && UINTPTR_MAX == UINT64_MAX
++/* Keep the original per-store exit boundary, with the true JIT return PC.
++ * A normal C call to helper_check_exit_request would capture the wrong PC. */
++QEMU_NOINLINE void uc_push_exit_arm(struct uc_struct *uc, uintptr_t retaddr)
++{
++    if (cpu_loop_exit_requested(uc->cpu)) {
++        if (uc->nested_level == 1) {
++            tb_exec_unlock(uc);
++        }
++        uc->cpu->tcg_exit_req = 0;
++        if (uc->skip_sync_pc_on_exit) {
++            uc->skip_sync_pc_on_exit = false;
++            cpu_loop_exit(uc->cpu);
++        } else {
++            cpu_loop_exit_restore(uc->cpu, retaddr);
++        }
++    }
++}
++
++uint32_t HELPER(push_try_arm)(CPUArchState *env, uint32_t address,
++                              uint32_t list, uint32_t mmu_idx)
++{
++    struct uc_struct *uc = env->uc;
++    target_ulong addr = address;
++    unsigned n = ctpop16(list);
++    CPUTLBEntry *entry;
++    CPUIOTLBEntry *io;
++    MemoryRegion *mr;
++    uintptr_t retaddr = GETPC();
++    uintptr_t host;
++    unsigned i;
++
++    /* No store has happened on any fallback return. */
++    if (n < 2 || (list & ~0x5fffU) || (addr & 3) ||
++        (addr & ~TARGET_PAGE_MASK) > TARGET_PAGE_SIZE - 4 * n ||
++        uc->snapshot_level || HOOK_EXISTS(uc, UC_HOOK_MEM_WRITE) ||
++        uc->stop_request || uc->invalid_error || cpu_loop_exit_requested(uc->cpu)) {
++        return 0;
++    }
++    entry = tlb_entry(env, mmu_idx, addr);
++    if (tlb_addr_write(entry) != ((addr & TARGET_PAGE_MASK) | TLB_NOTDIRTY) ||
++        entry->addr_code == (target_ulong)-1) {
++        return 0;
++    }
++    io = &env_tlb(env)->d[mmu_idx].iotlb[tlb_index(env, mmu_idx, addr)];
++    if (io->ram_section_index == UINT32_MAX) {
++        return 0;
++    }
++    mr = memory_region_from_cached_ram_section(uc, io->ram_section_index);
++    if (!mr || !mr->ram || mr->readonly || !(mr->perms & UC_PROT_WRITE) ||
++        (mr->perms & UC_PROT_EXEC)) {
++        return 0;
++    }
++
++    /* Under these guards notdirty_write has neither invalidation nor tag
++     * cleanup effects. Do not clear NOTDIRTY: future hooks must still work. */
++    host = (uintptr_t)addr + entry->addend;
++    for (i = 0; i < 15; i++) {
++        if (list & (1U << i)) {
++            stl_le_p((void *)host, env->regs[i]);
++            uc_push_exit_arm(uc, retaddr);
++            host += 4;
++        }
++    }
++    return 1;
++}
++#endif
